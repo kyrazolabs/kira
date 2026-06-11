@@ -9,6 +9,7 @@ const BTN_SIZE = 36
 const BTN_GAP = 10
 
 export function injectButton(input, onEnhance) {
+  if (!input) return
   removeButton()
 
   buttonEl = document.createElement('div')

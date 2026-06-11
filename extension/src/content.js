@@ -16,25 +16,33 @@ const STATE = {
   originalText: null
 }
 
+function isExtensionAlive() {
+  return !!(chrome.runtime && chrome.runtime.id)
+}
+
+async function safeSendMessage(msg) {
+  if (!isExtensionAlive()) {
+    throw new Error('Extension reloaded — please refresh the page')
+  }
+  return chrome.runtime.sendMessage(msg)
+}
+
 // Initialize when the page loads
 function init() {
-  STATE.platform = getActivePlatform()
+  try {
+    STATE.platform = getActivePlatform()
+    injectBaseStyles()
+    document.addEventListener('focusin', onFocusIn)
+    document.addEventListener('focusout', onFocusOut)
+    setupKeyboardShortcut(handleEnhance)
 
-  // Inject minimal base styles for our UI
-  injectBaseStyles()
-
-  // Listen for focus events on the document
-  document.addEventListener('focusin', onFocusIn)
-  document.addEventListener('focusout', onFocusOut)
-
-  // Listen for the keyboard shortcut command
-  setupKeyboardShortcut(handleEnhance)
-
-  // Check for already-focused input (e.g., page loaded with cursor in textarea)
-  setTimeout(() => {
-    const active = findActiveInput()
-    if (active) onFocusIn({ target: active })
-  }, 1000)
+    setTimeout(() => {
+      const active = findActiveInput()
+      if (active) onFocusIn({ target: active })
+    }, 1000)
+  } catch (e) {
+    // Extension context may be invalid — ignore
+  }
 }
 
 function onFocusIn(event) {
@@ -101,17 +109,11 @@ async function handleEnhance() {
 
   try {
     // Get current tone from storage (via message)
-    const settings = await chrome.runtime.sendMessage({ type: 'GET_SETTINGS' })
+    const settings = await safeSendMessage({ type: 'GET_SETTINGS' })
     const tone = settings.tone || 'casual'
 
-    // Track event
-    chrome.runtime.sendMessage({
-      type: 'TRACK_EVENT',
-      payload: { event: 'enhance_requested', metadata: { platform: STATE.platform.key, tone } }
-    })
-
     // Send to background for enhancement
-    const response = await chrome.runtime.sendMessage({
+    const response = await safeSendMessage({
       type: 'ENHANCE_TEXT',
       payload: {
         text,
@@ -152,7 +154,7 @@ async function handleEnhance() {
     }
   } catch (error) {
     STATE.isEnhancing = false
-    showToast('Connection error. Try again.', 'error')
+    showToast('Connection error. Reload the page and try again.', 'error')
     console.error('Enhance error:', error)
   }
 }
