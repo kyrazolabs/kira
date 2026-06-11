@@ -1,4 +1,4 @@
-// Popup UI script — tone selector, paste-to-enhance, usage display, platform detection
+// Popup UI script — tone selector, paste-to-enhance, usage display, platform detection, API key status
 
 const elements = {}
 
@@ -8,29 +8,24 @@ function $(id) {
 }
 
 async function init() {
-  // Get active tab's URL to detect platform
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
   const platform = detectPlatformFromUrl(tab?.url || '')
 
-  // Get settings and usage from background
-  const [settings, usage, licenseStatus] = await Promise.all([
+  const [settings, usage] = await Promise.all([
     chrome.runtime.sendMessage({ type: 'GET_SETTINGS' }),
-    chrome.runtime.sendMessage({ type: 'GET_USAGE' }),
-    chrome.runtime.sendMessage({ type: 'GET_LICENSE_STATUS' })
+    chrome.runtime.sendMessage({ type: 'GET_USAGE' })
   ])
 
   renderPlatform(platform)
   renderUsage(usage)
   renderTone(settings.tone)
-  renderLicenseTier(licenseStatus)
+  renderConnection(settings.apiKey)
+  renderLicenseTier(settings)
 
-  // Wire up events
   $('tone-select').addEventListener('change', onToneChange)
   $('paste-input').addEventListener('input', onPasteInput)
   $('paste-enhance-btn').addEventListener('click', onPasteEnhance)
-  $('options-btn').addEventListener('click', () => {
-    chrome.runtime.openOptionsPage()
-  })
+  $('options-btn').addEventListener('click', () => chrome.runtime.openOptionsPage())
 }
 
 function detectPlatformFromUrl(url) {
@@ -76,11 +71,32 @@ function renderTone(tone) {
   $('tone-select').value = tone || 'casual'
 }
 
-function renderLicenseTier(status) {
+function renderConnection(apiKey) {
+  const statusEl = $('connection-status')
+  const dot = $('connection-dot')
+  const text = $('connection-text')
+  const dashBtn = $('dashboard-link')
+
+  statusEl.style.display = 'flex'
+
+  if (apiKey) {
+    dot.className = 'connection-dot connected'
+    text.className = 'connection-text connected'
+    text.textContent = 'Connected to Kira'
+    dashBtn.style.display = 'flex'
+  } else {
+    dot.className = 'connection-dot disconnected'
+    text.className = 'connection-text disconnected'
+    text.textContent = 'Not connected — get API key'
+    dashBtn.style.display = 'none'
+  }
+}
+
+function renderLicenseTier(settings) {
   const badge = $('tier-badge')
   const upgradeBtn = $('upgrade-link')
 
-  if (status.tier === 'pro') {
+  if (settings.tier === 'pro') {
     badge.textContent = 'Pro'
     badge.className = 'badge badge-free'
     upgradeBtn.style.display = 'none'
@@ -94,10 +110,6 @@ function renderLicenseTier(status) {
 async function onToneChange() {
   const tone = $('tone-select').value
   await chrome.runtime.sendMessage({ type: 'UPDATE_SETTINGS', payload: { tone } })
-  chrome.runtime.sendMessage({
-    type: 'TRACK_EVENT',
-    payload: { event: 'tone_changed', metadata: { tone } }
-  })
 }
 
 function onPasteInput() {
@@ -108,6 +120,12 @@ function onPasteInput() {
 async function onPasteEnhance() {
   const text = $('paste-input').value.trim()
   if (!text) return
+
+  const settings = await chrome.runtime.sendMessage({ type: 'GET_SETTINGS' })
+  if (!settings.apiKey) {
+    showStatus('Add your API key in Settings first', 'error')
+    return
+  }
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
   const platform = detectPlatformFromUrl(tab?.url || '')
@@ -125,9 +143,7 @@ async function onPasteEnhance() {
 
     if (response.success) {
       $('paste-input').value = response.enhancedText
-      showStatus('Enhanced! Copy the text above.', 'success')
-
-      // Refresh usage
+      showStatus('Enhanced!', 'success')
       const usage = await chrome.runtime.sendMessage({ type: 'GET_USAGE' })
       renderUsage(usage)
     } else {
@@ -146,10 +162,7 @@ function showStatus(message, type) {
   el.textContent = message
   el.className = `status-message ${type}`
   el.style.display = 'block'
-
-  setTimeout(() => {
-    el.style.display = 'none'
-  }, 4000)
+  setTimeout(() => { el.style.display = 'none' }, 4000)
 }
 
 document.addEventListener('DOMContentLoaded', init)

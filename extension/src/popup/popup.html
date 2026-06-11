@@ -73,9 +73,18 @@
 
     <hr class="divider">
 
+    <!-- API Key status -->
+    <div id="connection-status" class="connection-status" style="display: none;">
+      <span id="connection-dot" class="connection-dot"></span>
+      <span id="connection-text" class="connection-text">Not connected</span>
+    </div>
+
     <!-- Actions -->
     <div class="actions">
       <button id="options-btn" class="btn btn-tertiary">⚙ Settings</button>
+      <a id="dashboard-link" href="http://localhost:5173" target="_blank" class="btn btn-secondary" style="display: none;">
+        Open Dashboard
+      </a>
       <a id="upgrade-link" href="https://content-enhancer.dev/upgrade" target="_blank" class="btn btn-primary btn-full upgrade-btn" style="display: none;">
         Upgrade to Pro — $4.99/mo
       </a>

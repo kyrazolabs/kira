@@ -3,6 +3,7 @@ import { cors } from '@elysiajs/cors'
 import type { Auth } from './auth'
 import { configRoutes } from './routes/config'
 import { usageRoutes } from './routes/usage'
+import { enhanceRoutes } from './routes/enhance'
 
 export function createApp(auth: Auth) {
   return new Elysia()
@@ -29,6 +30,7 @@ export function createApp(auth: Auth) {
 
     .use(configRoutes(auth))
     .use(usageRoutes(auth))
+    .use(enhanceRoutes(auth))
 }
 
 export type App = ReturnType<typeof createApp>
