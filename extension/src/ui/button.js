@@ -20,20 +20,36 @@ export function injectButton(input, onEnhance) {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
+    gap: 6px;
     height: 36px;
+    width: 36px;
+    min-width: 36px;
     background-color: ${colors.surfaceElevated};
     border: 1px solid ${colors.hairline};
     border-radius: ${rounded.md};
     cursor: pointer;
-    transition: background-color 150ms ease, transform 100ms ease;
-    font-size: 16px;
+    transition: width 180ms ease, background-color 150ms ease, transform 100ms ease, padding 180ms ease;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
     line-height: 1;
+    color: ${colors.onDark};
     padding: 0;
     margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
   `
 
-  buttonEl.innerHTML = `<span style="pointer-events: none;">&#x2728;</span>`
+  buttonEl.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style="flex-shrink:0;pointer-events:none;color:${colors.accentYellow}">
+      <path d="M0 0h24v24H0z" fill="none"/>
+      <path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5" d="M3 12c6.268 0 9-2.637 9-9c0 6.363 2.713 9 9 9c-6.287 0-9 2.713-9 9c0-6.287-2.732-9-9-9Z"/>
+    </svg>
+    <span style="pointer-events:none;opacity:0;transition:opacity 120ms ease;max-width:0;overflow:hidden;">Enhance</span>
+  `
+
+  const textSpan = buttonEl.querySelector('span')
 
   buttonEl.addEventListener('click', (e) => {
     e.preventDefault()
@@ -43,10 +59,18 @@ export function injectButton(input, onEnhance) {
 
   buttonEl.addEventListener('mouseenter', () => {
     buttonEl.style.backgroundColor = colors.surfaceCard
+    buttonEl.style.width = '110px'
+    buttonEl.style.padding = '0 12px'
+    textSpan.style.opacity = '1'
+    textSpan.style.maxWidth = '80px'
   })
 
   buttonEl.addEventListener('mouseleave', () => {
     buttonEl.style.backgroundColor = colors.surfaceElevated
+    buttonEl.style.width = '36px'
+    buttonEl.style.padding = '0'
+    textSpan.style.opacity = '0'
+    textSpan.style.maxWidth = '0'
   })
 
   buttonEl.addEventListener('mousedown', () => {

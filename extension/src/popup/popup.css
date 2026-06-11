@@ -43,6 +43,14 @@ body {
   font-weight: 500;
   line-height: 1.4;
   letter-spacing: 0.2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.popup-logo-icon {
+  color: #ffc533;
+  flex-shrink: 0;
 }
 
 /* Badges */
