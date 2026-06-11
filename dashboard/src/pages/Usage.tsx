@@ -86,10 +86,10 @@ export default function Usage() {
         <h3 className="text-heading-sm text-on-dark mb-lg">Daily Enhancements</h3>
         {stats?.daily && stats.daily.length > 0 ? (
           <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={stats.daily} margin={{ top: 8, right: 0, bottom: 0, left: -16 }}>
+            <LineChart data={stats.daily} margin={{ top: 8, right: 0, bottom: 0, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
-              <XAxis dataKey="date" stroke={chartColors.text} fontSize={12} tickLine={false} />
-              <YAxis stroke={chartColors.text} fontSize={12} tickLine={false} allowDecimals={false} />
+              <XAxis dataKey="date" stroke={chartColors.text} fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis hide />
               <Tooltip
                 contentStyle={{
                   background: '#0d0d0d',
@@ -111,10 +111,10 @@ export default function Usage() {
         <h3 className="text-heading-sm text-on-dark mb-lg">By Platform</h3>
         {stats?.byPlatform && stats.byPlatform.length > 0 ? (
           <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={stats.byPlatform} margin={{ top: 8, right: 0, bottom: 0, left: -16 }}>
+            <BarChart data={stats.byPlatform} margin={{ top: 8, right: 0, bottom: 0, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
-              <XAxis dataKey="platform" stroke={chartColors.text} fontSize={12} tickLine={false} />
-              <YAxis stroke={chartColors.text} fontSize={12} tickLine={false} allowDecimals={false} />
+              <XAxis dataKey="platform" stroke={chartColors.text} fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis hide />
               <Tooltip
                 contentStyle={{
                   background: '#0d0d0d',
@@ -136,10 +136,10 @@ export default function Usage() {
         <h3 className="text-heading-sm text-on-dark mb-lg">By Tone</h3>
         {stats?.byTone && stats.byTone.length > 0 ? (
           <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={stats.byTone} margin={{ top: 8, right: 0, bottom: 0, left: -16 }}>
+            <BarChart data={stats.byTone} margin={{ top: 8, right: 0, bottom: 0, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
-              <XAxis dataKey="tone" stroke={chartColors.text} fontSize={12} tickLine={false} />
-              <YAxis stroke={chartColors.text} fontSize={12} tickLine={false} allowDecimals={false} />
+              <XAxis dataKey="tone" stroke={chartColors.text} fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis hide />
               <Tooltip
                 contentStyle={{
                   background: '#0d0d0d',
