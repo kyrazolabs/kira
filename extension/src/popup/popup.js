@@ -7,6 +7,16 @@ function $(id) {
   return elements[id]
 }
 
+function safeText(id, text) {
+  const el = $(id)
+  if (el) el.textContent = text
+}
+
+function safeDisplay(id, value) {
+  const el = $(id)
+  if (el) el.style.display = value
+}
+
 async function init() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
   const platform = detectPlatformFromUrl(tab?.url || '')
@@ -55,57 +65,59 @@ function renderPlatform(platform) {
 function renderUsage(usage) {
   const { count, limit, tier } = usage
   const max = tier === 'pro' ? '∞' : limit
-  $('usage-count').textContent = `${count} / ${max}`
+  safeText('usage-count', `${count} / ${max}`)
 
   const fill = $('usage-fill')
+  if (!fill) return
   if (tier === 'pro') {
     fill.style.width = '100%'
     fill.className = 'usage-fill'
-    $('usage-label').textContent = 'enhancements (Pro — unlimited)'
+    safeText('usage-label', 'enhancements (Pro — unlimited)')
   } else {
     const pct = Math.min(100, (count / limit) * 100)
     fill.style.width = `${pct}%`
     fill.className = pct >= 100 ? 'usage-fill full' : pct >= 80 ? 'usage-fill warning' : 'usage-fill'
-    $('usage-label').textContent = 'enhancements'
+    safeText('usage-label', 'enhancements')
   }
 }
 
 function renderTone(tone) {
-  $('tone-select').value = tone || 'casual'
+  const sel = $('tone-select')
+  if (sel) sel.value = tone || 'casual'
 }
 
 function renderConnection(apiKey) {
   const statusEl = $('connection-status')
-  const dot = $('connection-dot')
-  const text = $('connection-text')
   const dashBtn = $('dashboard-link')
   const connectBtn = $('connect-btn')
 
   if (apiKey) {
-    statusEl.style.display = 'flex'
-    dot.className = 'connection-dot connected'
-    text.className = 'connection-text connected'
-    text.textContent = 'Connected to Kira'
-    dashBtn.style.display = 'flex'
-    connectBtn.style.display = 'none'
+    if (statusEl) statusEl.style.display = 'flex'
+    const dot = $('connection-dot')
+    const text = $('connection-text')
+    if (dot) { dot.className = 'connection-dot connected' }
+    if (text) { text.className = 'connection-text connected'; text.textContent = 'Connected to Kira' }
+    if (dashBtn) dashBtn.style.display = 'flex'
+    if (connectBtn) connectBtn.style.display = 'none'
   } else {
-    statusEl.style.display = 'none'
-    connectBtn.style.display = 'flex'
+    if (statusEl) statusEl.style.display = 'none'
+    if (connectBtn) connectBtn.style.display = 'flex'
   }
 }
 
 function renderLicenseTier(settings) {
   const badge = $('tier-badge')
   const upgradeBtn = $('upgrade-link')
+  if (!badge) return
 
   if (settings.tier === 'pro') {
     badge.textContent = 'Pro'
     badge.className = 'badge badge-free'
-    upgradeBtn.style.display = 'none'
+    if (upgradeBtn) upgradeBtn.style.display = 'none'
   } else {
     badge.textContent = 'Free'
     badge.className = 'badge badge-pro'
-    upgradeBtn.style.display = 'flex'
+    if (upgradeBtn) upgradeBtn.style.display = 'flex'
   }
 }
 
