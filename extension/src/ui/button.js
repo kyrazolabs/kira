@@ -145,56 +145,95 @@ function positionButton(input) {
 }
 
 function getCaretScreenPosition(input) {
-  // Prefer actual caret/selection position
+  const inputRect = input.getBoundingClientRect()
+  const style = window.getComputedStyle(input)
+
+  // For contenteditable, use Selection API directly
   if (input.isContentEditable) {
     const sel = window.getSelection()
     if (sel && sel.rangeCount > 0) {
       const range = sel.getRangeAt(0).cloneRange()
       range.collapse(false)
       const rect = range.getBoundingClientRect()
-      if (rect.top !== 0 || rect.left !== 0) {
+      if (rect.width !== 0 || rect.height !== 0) {
         return { left: rect.right, top: rect.top + rect.height / 2 }
       }
     }
+    // Fallback for empty contenteditable
+    return { left: inputRect.left + 8, top: inputRect.top + inputRect.height / 2 }
   }
 
-  if (input.selectionStart !== undefined) {
-    // Create a mirror to measure text position
-    const mirror = document.createElement('div')
-    const style = window.getComputedStyle(input)
-    mirror.style.cssText = `
-      position:fixed;visibility:hidden;white-space:pre-wrap;word-wrap:break-word;
-      font:${style.font};letter-spacing:${style.letterSpacing};
-      width:${input.clientWidth}px;padding:${style.padding};line-height:${style.lineHeight};
-    `
-    const textBefore = input.value.substring(0, input.selectionEnd ?? input.value.length)
-    // Detect RTL
-    const isRTL = style.direction === 'rtl'
-    mirror.textContent = isRTL ? textBefore : textBefore
+  // For textarea and input — use mirror span
+  const text = input.value
+  const caretPos = input.selectionEnd ?? text.length
+  const textBefore = text.substring(0, caretPos)
+
+  // Create mirror span to measure text width
+  const mirror = document.createElement('span')
+  mirror.style.cssText = `
+    position:fixed;visibility:hidden;white-space:pre-wrap;word-wrap:break-word;
+    font-family:${style.fontFamily};font-size:${style.fontSize};font-weight:${style.fontWeight};
+    letter-spacing:${style.letterSpacing};line-height:${style.lineHeight};
+  `
+
+  // For single-line input, simple measurement
+  if (input.tagName === 'INPUT' && input.type !== 'textarea') {
+    mirror.style.width = 'auto'
+    mirror.textContent = textBefore
     document.body.appendChild(mirror)
-    const mirrorRect = mirror.getBoundingClientRect()
+    const textWidth = mirror.getBoundingClientRect().width
     document.body.removeChild(mirror)
 
-    const inputRect = input.getBoundingClientRect()
-    const lineHeight = parseFloat(style.lineHeight) || 20
-
-    // Count newlines before cursor
-    const linesBefore = (textBefore.match(/\n/g) || []).length
-    const lastLineText = textBefore.split('\n').pop() || ''
-
-    // Approximate x position of caret
-    const charWidth = 8 // rough average
-    const caretX = inputRect.left + parseFloat(style.paddingLeft || '0') + lastLineText.length * charWidth
-
+    const padX = parseFloat(style.paddingLeft) || 0
+    // Account for scroll offset in inputs
+    const scrollLeft = input.scrollLeft || 0
     return {
-      left: isRTL ? inputRect.right - (lastLineText.length * charWidth) - parseFloat(style.paddingRight || '0') : Math.min(caretX, inputRect.right - 8),
-      top: inputRect.top + parseFloat(style.paddingTop || '0') + linesBefore * lineHeight + lineHeight / 2
+      left: inputRect.left + padX + textWidth - scrollLeft,
+      top: inputRect.top + inputRect.height / 2
     }
   }
 
-  // Fallback: center-right of input
-  const rect = input.getBoundingClientRect()
-  return { left: rect.right - 40, top: rect.top + rect.height / 2 }
+  // For textarea — handle multi-line
+  mirror.style.width = inputRect.width - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) + 'px'
+  mirror.style.paddingLeft = style.paddingLeft
+  mirror.style.paddingTop = style.paddingTop
+  mirror.style.paddingRight = style.paddingRight
+  mirror.style.paddingBottom = style.paddingBottom
+  mirror.style.boxSizing = 'border-box'
+
+  // Replace last newline-before-caret with a marker span to find cursor position
+  const lines = textBefore.split('\n')
+  const lastLine = lines[lines.length - 1] || ''
+
+  document.body.appendChild(mirror)
+
+  // Build HTML: all full lines + last line with a marker
+  let html = ''
+  for (let i = 0; i < lines.length - 1; i++) {
+    html += escapeHTML(lines[i]) + '<br>'
+  }
+  html += '<span id="ce-caret-marker">' + escapeHTML(lastLine) + '</span>'
+  mirror.innerHTML = html
+
+  const marker = mirror.querySelector('#ce-caret-marker')
+  const markerRect = marker?.getBoundingClientRect()
+
+  let top = inputRect.top + inputRect.height / 2
+  let left = inputRect.left + parseFloat(style.paddingLeft) || 8
+
+  if (markerRect) {
+    left = markerRect.left + markerRect.width
+    top = markerRect.top + markerRect.height / 2
+  }
+
+  document.body.removeChild(mirror)
+  return { left, top }
+}
+
+function escapeHTML(str) {
+  const div = document.createElement('div')
+  div.textContent = str
+  return div.innerHTML
 }
 
 export function setupKeyboardShortcut(callback) {
