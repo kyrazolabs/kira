@@ -41,6 +41,18 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   return true
 })
 
+// Handle external messages from dashboard (API key handoff)
+chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+  if (message.type === 'SET_API_KEY' && message.key) {
+    updateSettings({ apiKey: message.key })
+      .then(() => syncConfig())
+      .then(() => sendResponse({ ok: true }))
+      .catch(e => sendResponse({ ok: false, error: e.message }))
+    return true
+  }
+  sendResponse({ ok: false, error: 'Unknown message' })
+})
+
 async function handleMessage(message) {
   switch (message.type) {
     case 'ENHANCE_TEXT':

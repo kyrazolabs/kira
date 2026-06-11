@@ -26,6 +26,9 @@ async function init() {
   $('paste-input').addEventListener('input', onPasteInput)
   $('paste-enhance-btn').addEventListener('click', onPasteEnhance)
   $('options-btn').addEventListener('click', () => chrome.runtime.openOptionsPage())
+  $('connect-btn').addEventListener('click', () => {
+    chrome.tabs.create({ url: 'http://localhost:5173/login' })
+  })
 }
 
 function detectPlatformFromUrl(url) {
@@ -76,19 +79,18 @@ function renderConnection(apiKey) {
   const dot = $('connection-dot')
   const text = $('connection-text')
   const dashBtn = $('dashboard-link')
-
-  statusEl.style.display = 'flex'
+  const connectBtn = $('connect-btn')
 
   if (apiKey) {
+    statusEl.style.display = 'flex'
     dot.className = 'connection-dot connected'
     text.className = 'connection-text connected'
     text.textContent = 'Connected to Kira'
     dashBtn.style.display = 'flex'
+    connectBtn.style.display = 'none'
   } else {
-    dot.className = 'connection-dot disconnected'
-    text.className = 'connection-text disconnected'
-    text.textContent = 'Not connected — get API key'
-    dashBtn.style.display = 'none'
+    statusEl.style.display = 'none'
+    connectBtn.style.display = 'flex'
   }
 }
 

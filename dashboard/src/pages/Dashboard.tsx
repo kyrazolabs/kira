@@ -1,17 +1,31 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { configApi, usageApi, type IPersona, type IUsageStats } from '../lib/api'
+import { authClient } from '../lib/auth-client'
+import { useToast } from '../components/ui/Toast'
 
 export default function Dashboard() {
   const [stats, setStats] = useState<IUsageStats | null>(null)
   const [personas, setPersonas] = useState<IPersona[]>([])
+  const [apiKey, setApiKey] = useState<string | null>(null)
+  const [newKey, setNewKey] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { toast } = useToast()
+
+  const loadKeys = async () => {
+    try {
+      const res = await authClient.apiKey.list() as any
+      const keys = res?.data?.apiKeys || []
+      setApiKey(keys.length > 0 ? keys[0].id : null)
+    } catch { /* ignore */ }
+  }
 
   useEffect(() => {
     Promise.all([
       usageApi.getStats(7),
-      configApi.listPersonas()
+      configApi.listPersonas(),
+      loadKeys()
     ])
       .then(([s, p]) => {
         setStats(s)
@@ -20,6 +34,20 @@ export default function Dashboard() {
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
   }, [])
+
+  const createApiKey = async () => {
+    try {
+      const res = await authClient.apiKey.create({ name: 'Extension Key' }) as any
+      const key = res?.data?.key
+      if (key) {
+        setNewKey(key)
+        toast('API key created — copy it now', 'success')
+        await loadKeys()
+      }
+    } catch (e: any) {
+      toast(e.message || 'Failed to create key', 'error')
+    }
+  }
 
   if (loading) {
     return (
@@ -70,6 +98,42 @@ export default function Dashboard() {
           <p className="text-display-lg text-on-dark">{personas.length}</p>
           <p className="text-caption-sm text-mute mt-xs">configured</p>
         </div>
+      </div>
+
+      {/* API Key Section */}
+      <div className="card">
+        <h3 className="text-heading-sm text-on-dark mb-sm">Extension Connection</h3>
+        <p className="text-body-sm text-mute mb-lg">
+          {apiKey
+            ? 'Your extension is connected. If you need a new key, create one below.'
+            : 'Connect the Kira browser extension to your account.'}
+        </p>
+
+        {newKey ? (
+          <div>
+            <div className="flex items-center gap-sm mb-md">
+              <input
+                className="input text-sm flex-1 font-mono"
+                value={newKey}
+                readOnly
+                onFocus={e => e.target.select()}
+              />
+              <button
+                onClick={() => { navigator.clipboard.writeText(newKey); toast('Copied!', 'success') }}
+                className="btn-secondary"
+              >
+                Copy
+              </button>
+            </div>
+            <p className="text-caption-sm text-accent-yellow">
+              Copy this key now — it won't be shown again. Paste it in extension Settings.
+            </p>
+          </div>
+        ) : (
+          <button onClick={createApiKey} className="btn-primary">
+            {apiKey ? 'Create New Key' : 'Create API Key'}
+          </button>
+        )}
       </div>
 
       {/* Quick Actions */}

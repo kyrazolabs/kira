@@ -291,6 +291,19 @@ body {
   color: #ff6161;
 }
 
+.connection-status-text {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.connection-status-text.connected {
+  color: #59d499;
+}
+
+.connection-status-text.disconnected {
+  color: #9c9c9d;
+}
+
 /* Status message */
 .status-message {
   padding: 8px 12px;
