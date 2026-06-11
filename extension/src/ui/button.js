@@ -6,6 +6,7 @@ import { getCursorPosition } from '../utils/dom.js'
 let buttonEl = null
 
 export function injectButton(input, onEnhance) {
+  removeButton()
 
   buttonEl = document.createElement('div')
   buttonEl.id = 'ce-enhance-button'
@@ -42,14 +43,15 @@ export function injectButton(input, onEnhance) {
   `
 
   buttonEl.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style="flex-shrink:0;pointer-events:none;color:${colors.accentYellow}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style="flex-shrink:0;pointer-events:none;color:${colors.accentYellow};position:relative;z-index:1;">
       <path d="M0 0h24v24H0z" fill="none"/>
       <path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5" d="M3 12c6.268 0 9-2.637 9-9c0 6.363 2.713 9 9 9c-6.287 0-9 2.713-9 9c0-6.287-2.732-9-9-9Z"/>
     </svg>
-    <span style="pointer-events:none;opacity:0;transition:opacity 120ms ease;max-width:0;overflow:hidden;">Enhance</span>
+    <span class="ce-btn-label" style="pointer-events:none;white-space:nowrap;">Enhance</span>
   `
 
-  const textSpan = buttonEl.querySelector('span')
+  const textSpan = buttonEl.querySelector('.ce-btn-label')
+  textSpan.style.cssText = 'pointer-events:none;white-space:nowrap;opacity:0;width:0;overflow:hidden;transition:opacity 150ms ease,width 150ms ease;'
 
   buttonEl.addEventListener('click', (e) => {
     e.preventDefault()
@@ -59,10 +61,10 @@ export function injectButton(input, onEnhance) {
 
   buttonEl.addEventListener('mouseenter', () => {
     buttonEl.style.backgroundColor = colors.surfaceCard
-    buttonEl.style.width = '110px'
-    buttonEl.style.padding = '0 12px'
+    buttonEl.style.width = 'auto'
+    buttonEl.style.padding = '0 12px 0 10px'
     textSpan.style.opacity = '1'
-    textSpan.style.maxWidth = '80px'
+    textSpan.style.width = 'auto'
   })
 
   buttonEl.addEventListener('mouseleave', () => {
@@ -70,7 +72,7 @@ export function injectButton(input, onEnhance) {
     buttonEl.style.width = '36px'
     buttonEl.style.padding = '0'
     textSpan.style.opacity = '0'
-    textSpan.style.maxWidth = '0'
+    textSpan.style.width = '0'
   })
 
   buttonEl.addEventListener('mousedown', () => {
@@ -99,9 +101,18 @@ export function injectButton(input, onEnhance) {
 
 export function removeButton() {
   if (buttonEl && buttonEl.parentNode) {
-    buttonEl.parentNode.removeChild(buttonEl)
+    buttonEl.style.opacity = '0'
+    buttonEl.style.transform = 'scale(0.9)'
+    buttonEl.style.transition = 'opacity 150ms ease, transform 150ms ease'
+    setTimeout(() => {
+      if (buttonEl && buttonEl.parentNode) {
+        buttonEl.parentNode.removeChild(buttonEl)
+      }
+      buttonEl = null
+    }, 150)
+  } else {
+    buttonEl = null
   }
-  buttonEl = null
   document.removeEventListener('scroll', updatePosition, true)
 }
 
