@@ -4,16 +4,12 @@ import { colors, rounded } from '../utils/design-tokens.js'
 import { getCursorPosition } from '../utils/dom.js'
 
 let buttonEl = null
-let isDragging = false
-let dragOffset = { x: 0, y: 0 }
-let userPosition = null
 
 const BTN_SIZE = 36
 const BTN_GAP = 10
 
 export function injectButton(input, onEnhance) {
   removeButton()
-  userPosition = null
 
   buttonEl = document.createElement('div')
   buttonEl.id = 'ce-enhance-button'
@@ -21,7 +17,6 @@ export function injectButton(input, onEnhance) {
   buttonEl.setAttribute('role', 'button')
   buttonEl.setAttribute('tabindex', '0')
   buttonEl.setAttribute('aria-label', 'Enhance text (Ctrl+Shift+E)')
-  buttonEl.draggable = false
 
   buttonEl.style.cssText = `
     position: fixed;
@@ -34,7 +29,7 @@ export function injectButton(input, onEnhance) {
     background-color: ${colors.surfaceElevated};
     border: 1px solid ${colors.hairline};
     border-radius: ${rounded.md};
-    cursor: grab;
+    cursor: pointer;
     user-select: none;
     font-family: Inter, system-ui, sans-serif;
     font-size: 14px;
@@ -61,7 +56,6 @@ export function injectButton(input, onEnhance) {
 
   // Click
   buttonEl.addEventListener('click', (e) => {
-    if (isDragging) return
     e.preventDefault()
     e.stopPropagation()
     onEnhance()
@@ -69,7 +63,6 @@ export function injectButton(input, onEnhance) {
 
   // Hover expand
   buttonEl.addEventListener('mouseenter', () => {
-    if (isDragging) return
     buttonEl.style.backgroundColor = colors.surfaceCard
     buttonEl.style.width = 'auto'
     buttonEl.style.borderRadius = '20px'
@@ -81,7 +74,6 @@ export function injectButton(input, onEnhance) {
   })
 
   buttonEl.addEventListener('mouseleave', () => {
-    if (isDragging) return
     buttonEl.style.backgroundColor = colors.surfaceElevated
     buttonEl.style.width = BTN_SIZE + 'px'
     buttonEl.style.borderRadius = rounded.md
@@ -90,35 +82,6 @@ export function injectButton(input, onEnhance) {
     textSpan.style.maxWidth = '0'
     textSpan.style.opacity = '0'
     textSpan.style.marginLeft = '0'
-  })
-
-  // Drag
-  buttonEl.addEventListener('mousedown', (e) => {
-    if (e.button !== 0) return
-    isDragging = true
-    buttonEl.style.cursor = 'grabbing'
-    buttonEl.style.transition = 'none'
-    const rect = buttonEl.getBoundingClientRect()
-    dragOffset.x = e.clientX - rect.left
-    dragOffset.y = e.clientY - rect.top
-
-    const onMove = (ev) => {
-      userPosition = {
-        left: ev.clientX - dragOffset.x,
-        top: ev.clientY - dragOffset.y
-      }
-      buttonEl.style.left = userPosition.left + 'px'
-      buttonEl.style.top = userPosition.top + 'px'
-    }
-    const onUp = () => {
-      isDragging = false
-      buttonEl.style.cursor = 'grab'
-      buttonEl.style.transition = 'width 180ms ease, border-radius 180ms ease, background-color 150ms ease, opacity 200ms ease, padding 180ms ease'
-      document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseup', onUp)
-    }
-    document.addEventListener('mousemove', onMove)
-    document.addEventListener('mouseup', onUp)
   })
 
   // Keyboard
@@ -142,28 +105,18 @@ export function removeButton() {
     buttonEl.style.transition = 'opacity 150ms ease'
     const el = buttonEl
     buttonEl = null
-    userPosition = null
     document.removeEventListener('scroll', updatePosition, true)
     setTimeout(() => {
       if (el.parentNode) el.parentNode.removeChild(el)
     }, 150)
   } else {
     buttonEl = null
-    userPosition = null
     document.removeEventListener('scroll', updatePosition, true)
   }
 }
 
-export function resetButtonPosition() {
-  userPosition = null
-  if (buttonEl) {
-    const active = document.activeElement
-    if (active) positionButton(active)
-  }
-}
-
 function updatePosition() {
-  if (!buttonEl || isDragging) return
+  if (!buttonEl) return
   const active = document.activeElement
   if (active && (active.isContentEditable || active.tagName === 'TEXTAREA' || active.tagName === 'INPUT')) {
     positionButton(active)
@@ -171,29 +124,19 @@ function updatePosition() {
 }
 
 function positionButton(input) {
-  if (!buttonEl || !input || isDragging) return
-
-  // If user dragged, keep their position
-  if (userPosition) {
-    buttonEl.style.top = userPosition.top + 'px'
-    buttonEl.style.left = userPosition.left + 'px'
-    return
-  }
+  if (!buttonEl || !input) return
 
   const caret = getCaretScreenPosition(input)
   const viewW = window.innerWidth
   const viewH = window.innerHeight
 
-  // Place button after the caret, with gap
   let left = caret.left + BTN_GAP
   let top = caret.top - BTN_SIZE / 2
 
-  // If too close to right edge, put it left of caret instead
   if (left + BTN_SIZE > viewW - 8) {
     left = caret.left - BTN_SIZE - BTN_GAP
   }
 
-  // Clamp to viewport
   left = Math.max(8, Math.min(left, viewW - BTN_SIZE - 8))
   top = Math.max(8, Math.min(top, viewH - BTN_SIZE - 8))
 

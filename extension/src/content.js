@@ -3,7 +3,7 @@
 
 import { detectPlatform } from './lib/platforms.js'
 import { getActivePlatform, findActiveInput, getInputText, setInputText } from './utils/dom.js'
-import { injectButton, removeButton, resetButtonPosition, setupKeyboardShortcut } from './ui/button.js'
+import { injectButton, removeButton, setupKeyboardShortcut } from './ui/button.js'
 import { showDiffPanel, hideDiffPanel } from './ui/diff.js'
 import { showToast } from './ui/toast.js'
 import { injectBaseStyles } from './ui/styles.js'
@@ -47,7 +47,6 @@ function onFocusIn(event) {
 
   if (isTextInput) {
     STATE.activeInput = target
-    resetButtonPosition()
     injectButton(target, handleEnhance)
   }
 }
