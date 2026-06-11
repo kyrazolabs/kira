@@ -1,25 +1,21 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { configApi, usageApi, type IPersona, type IUsageStats } from '../lib/api'
-import { authClient } from '../lib/auth-client'
 
 export default function Dashboard() {
   const [stats, setStats] = useState<IUsageStats | null>(null)
   const [personas, setPersonas] = useState<IPersona[]>([])
-  const [apiKeys, setApiKeys] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     Promise.all([
       usageApi.getStats(7),
-      configApi.listPersonas(),
-      authClient.apiKey.list()
+      configApi.listPersonas()
     ])
-      .then(([s, p, k]) => {
+      .then(([s, p]) => {
         setStats(s)
         setPersonas(p || [])
-        setApiKeys((k?.data as any)?.apiKeys || [])
       })
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
@@ -29,8 +25,8 @@ export default function Dashboard() {
     return (
       <div className="space-y-xl">
         <div className="h-8 w-48 bg-surface rounded animate-pulse" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg">
-          {[1, 2, 3, 4].map(i => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg">
+          {[1, 2, 3].map(i => (
             <div key={i} className="card h-24 animate-pulse" />
           ))}
         </div>
@@ -58,7 +54,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg">
         <div className="card">
           <p className="text-caption-sm text-mute mb-xs">Today</p>
           <p className="text-display-lg text-on-dark">{stats?.today || 0}</p>
@@ -73,11 +69,6 @@ export default function Dashboard() {
           <p className="text-caption-sm text-mute mb-xs">Personas</p>
           <p className="text-display-lg text-on-dark">{personas.length}</p>
           <p className="text-caption-sm text-mute mt-xs">configured</p>
-        </div>
-        <div className="card">
-          <p className="text-caption-sm text-mute mb-xs">API Keys</p>
-          <p className="text-display-lg text-on-dark">{apiKeys.length}</p>
-          <p className="text-caption-sm text-mute mt-xs">active keys</p>
         </div>
       </div>
 
