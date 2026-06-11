@@ -1,0 +1,22 @@
+{
+  "name": "kira-extension",
+  "version": "1.0.0",
+  "description": "AI-powered content enhancement for social platforms. One click, platform-aware, inline.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node esbuild.config.mjs --watch",
+    "build": "node esbuild.config.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/ tests/",
+    "bundle": "npm run build && cd dist && zip -r ../content-enhancer.zip ."
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "eslint": "^9.0.0",
+    "globals": "^17.6.0",
+    "jsdom": "^25.0.0",
+    "vitest": "^2.0.0"
+  }
+}

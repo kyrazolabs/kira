@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kira</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <div class="popup-header">
+      <span class="popup-logo">✨ Content Enhancer</span>
+      <span id="tier-badge" class="badge badge-pro">Free</span>
+    </div>
+
+    <!-- Usage -->
+    <div class="usage-bar">
+      <div class="usage-text">
+        <span>Today:</span>
+        <span id="usage-count" class="usage-numbers">0 / 10</span>
+        <span class="usage-label">enhancements</span>
+      </div>
+      <div class="usage-progress">
+        <div id="usage-fill" class="usage-fill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Platform -->
+    <div class="field">
+      <label class="field-label">Platform</label>
+      <div id="platform-display" class="platform-chip">
+        <span id="platform-name">Detecting...</span>
+      </div>
+    </div>
+
+    <!-- Tone selector -->
+    <div class="field">
+      <label class="field-label" for="tone-select">Tone</label>
+      <select id="tone-select" class="select-input">
+        <option value="casual">Casual</option>
+        <option value="professional">Professional</option>
+        <option value="engaging">Engaging</option>
+      </select>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Paste to enhance -->
+    <div class="field">
+      <label class="field-label">Paste text to enhance</label>
+      <textarea
+        id="paste-input"
+        class="textarea-input"
+        placeholder="Paste your text here, then click enhance..."
+        rows="4"
+      ></textarea>
+      <button id="paste-enhance-btn" class="btn btn-primary btn-full" disabled>
+        ✨ Enhance Pasted Text
+      </button>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Actions -->
+    <div class="actions">
+      <button id="options-btn" class="btn btn-tertiary">⚙ Settings</button>
+      <a id="upgrade-link" href="https://content-enhancer.dev/upgrade" target="_blank" class="btn btn-primary btn-full upgrade-btn" style="display: none;">
+        Upgrade to Pro — $4.99/mo
+      </a>
+    </div>
+
+    <!-- Status message -->
+    <div id="status" class="status-message" style="display: none;"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

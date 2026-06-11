@@ -1,0 +1,313 @@
+/* Popup styles — Raycast dark-canvas DESIGN.md */
+/* Canvas: #07080a, Surface: #0d0d0d, Primary: #ffffff, Hairline: #242728 */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 340px;
+  min-height: 400px;
+  background-color: #07080a;
+  color: #cdcdcd;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  font-feature-settings: "calt", "kern", "liga", "ss03";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+#app {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Header */
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.popup-logo {
+  color: #f4f4f6;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.2px;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.4px;
+}
+
+.badge-pro {
+  background-color: #101111;
+  color: rgba(255,255,255,0.72);
+}
+
+.badge-free {
+  background-color: rgba(87,193,255,0.15);
+  color: #57c1ff;
+}
+
+/* Usage bar */
+.usage-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.usage-text {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: 0.1px;
+}
+
+.usage-numbers {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.usage-label {
+  color: #9c9c9d;
+}
+
+.usage-progress {
+  height: 3px;
+  background-color: #0d0d0d;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.usage-fill {
+  height: 100%;
+  background-color: #ffffff;
+  border-radius: 2px;
+  transition: width 300ms ease;
+}
+
+.usage-fill.warning {
+  background-color: #ffc533;
+}
+
+.usage-fill.full {
+  background-color: #ff6161;
+}
+
+/* Divider */
+.divider {
+  border: none;
+  border-top: 1px solid #242728;
+  margin: 4px 0;
+}
+
+/* Form fields */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  color: #9c9c9d;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.1px;
+}
+
+/* Select */
+.select-input {
+  height: 36px;
+  padding: 8px 12px;
+  background-color: #101111;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  font-feature-settings: "calt", "kern", "liga", "ss03";
+  border: 1px solid #242728;
+  border-radius: 8px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%239c9c9d' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.select-input:focus {
+  outline: none;
+  border-color: rgba(255,255,255,0.16);
+}
+
+.select-input option {
+  background-color: #0d0d0d;
+  color: #cdcdcd;
+}
+
+/* Textarea */
+.textarea-input {
+  padding: 8px 12px;
+  background-color: #101111;
+  color: #cdcdcd;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  font-feature-settings: "calt", "kern", "liga", "ss03";
+  border: 1px solid #242728;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.textarea-input::placeholder {
+  color: #6a6b6c;
+}
+
+.textarea-input:focus {
+  outline: none;
+  border-color: rgba(255,255,255,0.16);
+}
+
+/* Platform chip */
+.platform-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background-color: #0d0d0d;
+  border: 1px solid #242728;
+  border-radius: 8px;
+  color: #cdcdcd;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.platform-chip .platform-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #59d499;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+  font-feature-settings: "calt", "kern", "liga", "ss03";
+  cursor: pointer;
+  transition: background-color 150ms ease;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.btn-primary:hover {
+  background-color: #e8e8e8;
+}
+
+.btn-primary:disabled {
+  background-color: #101111;
+  color: #6a6b6c;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid #242728;
+}
+
+.btn-secondary:hover {
+  background-color: #121212;
+}
+
+.btn-tertiary {
+  background-color: #101111;
+  color: #ffffff;
+  border: 1px solid #242728;
+}
+
+.btn-tertiary:hover {
+  background-color: #121212;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Upgrade link */
+.upgrade-btn {
+  font-size: 13px !important;
+}
+
+/* Status message */
+.status-message {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.status-message.success {
+  background-color: rgba(89,212,153,0.15);
+  color: #59d499;
+  border: 1px solid rgba(89,212,153,0.25);
+}
+
+.status-message.error {
+  background-color: rgba(255,97,97,0.15);
+  color: #ff6161;
+  border: 1px solid rgba(255,97,97,0.25);
+}
+
+.status-message.info {
+  background-color: rgba(87,193,255,0.15);
+  color: #57c1ff;
+  border: 1px solid rgba(87,193,255,0.25);
+}

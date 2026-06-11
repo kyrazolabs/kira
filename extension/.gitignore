@@ -3,5 +3,3 @@ dist/
 *.zip
 .env
 .DS_Store
-*.log
-/tmp/

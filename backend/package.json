@@ -1,0 +1,28 @@
+{
+  "name": "kira-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/server.ts",
+    "build": "bun build src/index.ts --outdir=dist",
+    "test": "bun test",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "better-auth": "^1.2.0",
+    "@better-auth/mongo-adapter": "^1.0.0",
+    "@better-auth/stripe": "^1.0.0",
+    "@better-auth/api-key": "^1.0.0",
+    "elysia": "^1.1.0",
+    "@elysiajs/cors": "^1.1.0",
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.8.0",
+    "stripe": "^22.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "bun-types": "latest",
+    "typescript": "^5.6.0"
+  }
+}

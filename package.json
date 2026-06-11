@@ -1,0 +1,16 @@
+{
+  "name": "kira",
+  "private": true,
+  "workspaces": ["backend", "dashboard"],
+  "scripts": {
+    "dev": "cd backend && bun run dev & sleep 3 && cd dashboard && npm run dev",
+    "dev:api": "cd backend && bun run dev",
+    "dev:web": "cd dashboard && npm run dev",
+    "build": "cd backend && bun run build && cd ../dashboard && npm run build",
+    "test": "cd backend && bun test && cd ../dashboard && npm test",
+    "lint": "cd backend && bun lint && cd ../dashboard && npm lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}

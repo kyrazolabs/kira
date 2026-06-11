@@ -1,0 +1,328 @@
+/* Options page styles — Raycast dark-canvas DESIGN.md */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #07080a;
+  color: #cdcdcd;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  font-feature-settings: "calt", "kern", "liga", "ss03";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+}
+
+/* Header */
+.page-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.page-title {
+  color: #f4f4f6;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+}
+
+.version {
+  color: #6a6b6c;
+  font-size: 14px;
+}
+
+/* Sections */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 0;
+}
+
+.section-title {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.2px;
+}
+
+.section-desc {
+  color: #9c9c9d;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Divider */
+.divider {
+  border: none;
+  border-top: 1px solid #242728;
+  margin: 0;
+}
+
+/* Form fields */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.field-label {
+  color: #9c9c9d;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.1px;
+}
+
+/* Text input */
+.field:has(#api-key-input) {
+  flex-direction: row;
+  align-items: center;
+}
+
+#api-key-input {
+  flex: 1;
+}
+
+.text-input {
+  height: 36px;
+  padding: 8px 12px;
+  background-color: #101111;
+  color: #cdcdcd;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  font-feature-settings: "calt", "kern", "liga", "ss03";
+  border: 1px solid #242728;
+  border-radius: 8px;
+}
+
+.text-input::placeholder {
+  color: #6a6b6c;
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: rgba(255,255,255,0.16);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+  font-feature-settings: "calt", "kern", "liga", "ss03";
+  cursor: pointer;
+  transition: background-color 150ms ease;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.btn-primary:hover {
+  background-color: #e8e8e8;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid #242728;
+}
+
+.btn-secondary:hover {
+  background-color: #121212;
+}
+
+.btn-tertiary {
+  background-color: #101111;
+  color: #ffffff;
+  border: 1px solid #242728;
+}
+
+.btn-tertiary:hover {
+  background-color: #121212;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  height: 28px;
+  font-size: 13px;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* Links */
+.link {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.link-sm {
+  color: #9c9c9d;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.link-sm:hover {
+  color: #cdcdcd;
+}
+
+/* Keycap */
+.keycap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #121212, #0d0d0d);
+  color: #cdcdcd;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  padding: 1px 6px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.08);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-style: normal;
+}
+
+/* Toggle */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: #0d0d0d;
+  border: 1px solid #242728;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #cdcdcd;
+  font-size: 14px;
+}
+
+.toggle-input {
+  appearance: none;
+  width: 36px;
+  height: 20px;
+  background-color: #434345;
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.toggle-input::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transition: transform 150ms ease;
+}
+
+.toggle-input:checked {
+  background-color: #59d499;
+}
+
+.toggle-input:checked::after {
+  transform: translateX(16px);
+}
+
+/* License status */
+.license-status {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.license-status.valid {
+  color: #59d499;
+}
+
+.license-status.invalid {
+  color: #ff6161;
+}
+
+/* Status message */
+.status-message {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 12px 0;
+}
+
+.status-message.success {
+  background-color: rgba(89,212,153,0.15);
+  color: #59d499;
+  border: 1px solid rgba(89,212,153,0.25);
+}
+
+.status-message.error {
+  background-color: rgba(255,97,97,0.15);
+  color: #ff6161;
+  border: 1px solid rgba(255,97,97,0.25);
+}
+
+/* Footer */
+.page-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid #242728;
+}
+
+.text-muted {
+  color: #9c9c9d;
+  font-size: 13px;
+}
