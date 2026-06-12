@@ -1,6 +1,7 @@
 // Popup UI script — tone selector, paste-to-enhance, usage display, platform detection, API key status
 
 const elements = {}
+let refreshTimer = null
 
 function $(id) {
   if (!elements[id]) elements[id] = document.getElementById(id)
@@ -10,11 +11,6 @@ function $(id) {
 function safeText(id, text) {
   const el = $(id)
   if (el) el.textContent = text
-}
-
-function safeDisplay(id, value) {
-  const el = $(id)
-  if (el) el.style.display = value
 }
 
 async function init() {
@@ -39,7 +35,33 @@ async function init() {
   $('connect-btn').addEventListener('click', () => {
     chrome.tabs.create({ url: 'http://localhost:5173/login' })
   })
+
+  // Poll usage every 3s while popup is open
+  refreshTimer = setInterval(refreshUsage, 3000)
+
+  // Listen for storage changes (background updates count)
+  chrome.storage.onChanged.addListener(onStorageChanged)
 }
+
+function onStorageChanged(changes, area) {
+  if (area !== 'local') return
+  if (changes.enhancer_settings) {
+    refreshUsage()
+  }
+}
+
+async function refreshUsage() {
+  try {
+    const usage = await chrome.runtime.sendMessage({ type: 'GET_USAGE' })
+    renderUsage(usage)
+  } catch { /* popup might be closed */ }
+}
+
+// Clean up timer when popup closes
+window.addEventListener('unload', () => {
+  if (refreshTimer) clearInterval(refreshTimer)
+  chrome.storage.onChanged.removeListener(onStorageChanged)
+})
 
 function detectPlatformFromUrl(url) {
   try {
@@ -63,6 +85,7 @@ function renderPlatform(platform) {
 }
 
 function renderUsage(usage) {
+  if (!usage) return
   const { count, limit, tier } = usage
   const max = tier === 'pro' ? '∞' : limit
   safeText('usage-count', `${count} / ${max}`)
@@ -74,7 +97,7 @@ function renderUsage(usage) {
     fill.className = 'usage-fill'
     safeText('usage-label', 'enhancements (Pro — unlimited)')
   } else {
-    const pct = Math.min(100, (count / limit) * 100)
+    const pct = Math.min(100, (count / Math.max(limit, 1)) * 100)
     fill.style.width = `${pct}%`
     fill.className = pct >= 100 ? 'usage-fill full' : pct >= 80 ? 'usage-fill warning' : 'usage-fill'
     safeText('usage-label', 'enhancements')
@@ -158,8 +181,8 @@ async function onPasteEnhance() {
     if (response.success) {
       $('paste-input').value = response.enhancedText
       showStatus('Enhanced!', 'success')
-      const usage = await chrome.runtime.sendMessage({ type: 'GET_USAGE' })
-      renderUsage(usage)
+      // Immediate refresh
+      await refreshUsage()
     } else {
       showStatus(response.error || 'Enhancement failed', 'error')
     }
