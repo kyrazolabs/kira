@@ -43,11 +43,7 @@ export function createAuth(db: Db) {
       apiKey({
         defaultPrefix: 'ce_',
         enableSessionForAPIKeys: true,
-        rateLimit: {
-          enabled: true,
-          timeWindow: 60000,
-          maxRequests: 60
-        }
+        rateLimit: { enabled: false}
       }),
       ...(process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes('replace_me')
         ? [stripe({
