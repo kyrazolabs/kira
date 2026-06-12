@@ -1,30 +1,51 @@
 services:
-  kira-api:
+  api:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    container_name: kira-api
+    container_name: api
     ports:
       - "3001:3001"
     environment:
       - PORT=3001
       - NODE_ENV=production
-      - MONGODB_URI=mongodb://kira-mongo:27017/kira
+      - MONGODB_URI=mongodb://${DB_USERNAME}:${DB_PASSWORD}@database:27017/${DB_NAME}
+
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
       - BETTER_AUTH_URL=${BETTER_AUTH_URL}
+
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
       - STRIPE_PRO_PRICE_ID=${STRIPE_PRO_PRICE_ID}
+      
       - EXTENSION_ID=${EXTENSION_ID}
+    networks:
+      - kiranet
+    labels:
+      - coolify.managed=true
+      - coolify.version=4.0.0
+      - coolify.serviceId=1
+      - coolify.type=service
+      - coolify.name=api
+      - coolify.resourceName=api
+      - coolify.projectName=the-forge
+      - coolify.serviceName=api
+      - coolify.environmentName=production
+      - coolify.pullRequestId=0
+      - coolify.service.subId=1
+      - coolify.service.subType=application
+      - coolify.service.subName=api
     depends_on:
-      kira-mongo:
+      database:
         condition: service_healthy
     restart: unless-stopped
 
-  kira-dashboard:
+  dashboard:
     build:
       context: .
       dockerfile: dashboard/Dockerfile
@@ -33,21 +54,83 @@ services:
     container_name: kira-dashboard
     ports:
       - "80:80"
+    networks:
+      - kiranet
+    labels:
+      - coolify.managed=true
+      - coolify.version=4.0.0
+      - coolify.serviceId=1
+      - coolify.type=service
+      - coolify.name=dashboard
+      - coolify.resourceName=dashboard
+      - coolify.projectName=the-forge
+      - coolify.serviceName=dashboard
+      - coolify.environmentName=production
+      - coolify.pullRequestId=0
+      - coolify.service.subId=2
+      - coolify.service.subType=application
+      - coolify.service.subName=dashboard
     depends_on:
-      - kira-api
+      - api
     restart: unless-stopped
 
-  kira-mongo:
-    image: mongo:8
-    container_name: kira-mongo
-    volumes:
-      - kira-mongo-data:/data/db
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  database:
+    image: "mongo:7.0"
+    command:
+      - mongod
+      - "--bind_ip_all"
+      - "--auth"
+    container_name: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${DB_NAME}
     restart: unless-stopped
+    networks:
+      - kiranet
+    labels:
+      - coolify.managed=true
+      - coolify.version=4.0.0
+      - coolify.serviceId=1
+      - coolify.type=service
+      - coolify.name=mongo
+      - coolify.resourceName=mongo
+      - coolify.projectName=the-forge
+      - coolify.serviceName=mongo
+      - coolify.environmentName=production
+      - coolify.pullRequestId=0
+      - coolify.service.subId=4
+      - coolify.service.subType=database
+      - coolify.service.subName=mongo
+    healthcheck:
+      test:
+        - CMD
+        - mongosh
+        - --eval
+        - db.adminCommand('ping')
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    mem_limit: "0"
+    memswap_limit: "0"
+    mem_swappiness: 60
+    mem_reservation: "0"
+    cpus: 0.0
+    cpu_shares: 1024
+    volumes:
+      - "mongo_configdb:/data/configdb"
+      - "mongo_data:/data/db"
 
 volumes:
-  kira-mongo-data:
+  mongo_configdb:
+    name: mongo_configdb
+    external: false
+  mongo_data:
+    name: mongo_data
+    external: false
+
+networks:
+  kiranet:
+    name: kiranet
+    external: false
