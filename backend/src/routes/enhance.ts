@@ -13,37 +13,6 @@ const enhanceBody = t.Object({
   tone: t.Optional(t.String())
 })
 
-  const tones: Record<string, string> = {
-    casual: 'Rewrite this in a casual, conversational tone. Keep it short and punchy.',
-    professional: 'Rewrite this professionally. Clear, confident, no fluff.',
-    engaging: 'Rewrite this to maximize engagement. Hook first, emotional language, strong call to action.'
-  }
-
-  const platformLabel: Record<string, string> = {
-    twitter: 'X / Twitter', linkedin: 'LinkedIn', reddit: 'Reddit',
-    threads: 'Threads', generic: 'the web'
-  }
-
-  const base = personaPrompt || [
-    `You are an expert content writer for ${platformLabel[platform] || 'the web'}.`,
-    '',
-    rules[platform] || rules.generic,
-    '',
-    tones[tone] || tones.casual
-  ].join('\n')
-
-  return [
-    base,
-    '',
-    'Original text:',
-    '"""',
-    text,
-    '"""',
-    '',
-    'Return ONLY the enhanced text — no explanations, no quotes around it.'
-  ].join('\n')
-}
-
 export function enhanceRoutes(auth: Auth) {
   return new Elysia({ prefix: '/api/enhance' })
     .use(sessionAuth(auth))
@@ -78,7 +47,7 @@ export function enhanceRoutes(auth: Auth) {
         const platform = body.platform || 'generic'
 
         // Build prompt with user's persona if available
-        const prompt = buildPrompt(platform, tone, defaultPersona?.systemPrompt || null, body.text)
+        const prompt = buildEnhancePrompt(platform, tone, defaultPersona?.systemPrompt || null, body.text)
 
         // Call Gemini
         const enhancedText = await callGemini(prompt, defaultPersona?.temperature ?? 0.8)
