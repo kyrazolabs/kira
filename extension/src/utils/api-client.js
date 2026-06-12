@@ -8,7 +8,7 @@ async function request(path, options = {}) {
   const apiKey = await getStored('apiKey')
   const headers = {
     'Content-Type': 'application/json',
-    ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
+    ...(apiKey ? { 'x-api-key': apiKey } : {}),
     ...options.headers
   }
 
@@ -22,7 +22,6 @@ async function request(path, options = {}) {
   return data
 }
 
-// Enhance text through the backend
 export async function enhanceThroughAPI({ text, platform, tone }) {
   return request('/enhance', {
     method: 'POST',
@@ -30,12 +29,10 @@ export async function enhanceThroughAPI({ text, platform, tone }) {
   })
 }
 
-// Sync user config (personas, tone, settings)
 export async function syncConfig() {
   return request('/config')
 }
 
-// Record usage event
 export async function recordUsage({ platform, tone, eventType, textLength = 0 }) {
   return request('/usage/event', {
     method: 'POST',
@@ -43,7 +40,6 @@ export async function recordUsage({ platform, tone, eventType, textLength = 0 })
   })
 }
 
-// Get today's usage count
 export async function getTodayUsage() {
   return request('/usage/today')
 }
