@@ -1,7 +1,6 @@
 // Background service worker — relays enhance requests to backend API, handles config sync
-import { enhanceThroughAPI, syncConfig, recordUsage, getTodayUsage } from './utils/api-client.js'
-import { checkLicenseStatus, getEnhancementLimit } from './lib/license.js'
-import { getSettings, updateSettings, getDailyCount, incrementDailyCount, FREE_TIER_LIMIT } from './utils/storage.js'
+import { enhanceThroughAPI, syncConfig, getTodayUsage } from './utils/api-client.js'
+import { getSettings, updateSettings } from './utils/storage.js'
 
 // Sync config from backend when extension starts
 chrome.runtime.onInstalled.addListener(async () => {
@@ -101,31 +100,22 @@ async function handleEnhanceText({ text, platform, tone }) {
       }
     }
 
-    // Check daily limit (enforced client-side as fallback)
-    const dailyCount = await getDailyCount()
-    if (dailyCount >= FREE_TIER_LIMIT) {
-      return {
-        success: false,
-        error: `Daily limit reached: ${dailyCount}/${FREE_TIER_LIMIT} free enhancements used.`
-      }
-    }
-
-    // Call backend API
+    // Call backend API (handles rate limiting server-side)
     const result = await enhanceThroughAPI({
       text,
       platform,
       tone: tone || settings.tone || 'casual'
     })
 
-    // Increment local counter
-    await incrementDailyCount()
+    // Sync count from backend after successful enhancement
+    const usage = await getTodayUsage()
 
     return {
       success: true,
       enhancedText: result.enhancedText,
       usage: {
-        count: await getDailyCount(),
-        limit: FREE_TIER_LIMIT,
+        count: usage.count || 0,
+        limit: usage.limit || 10,
         tier: 'free'
       }
     }
@@ -141,17 +131,8 @@ async function handleEnhanceText({ text, platform, tone }) {
 async function getUsageInfo() {
   try {
     const data = await getTodayUsage()
-    return {
-      count: data.count || 0,
-      limit: data.limit || FREE_TIER_LIMIT,
-      tier: 'free'
-    }
+    return { count: data.count || 0, limit: data.limit || 10, tier: 'free' }
   } catch {
-    const dailyCount = await getDailyCount()
-    return {
-      count: dailyCount,
-      limit: FREE_TIER_LIMIT,
-      tier: 'free'
-    }
+    return { count: 0, limit: 10, tier: 'free' }
   }
 }
