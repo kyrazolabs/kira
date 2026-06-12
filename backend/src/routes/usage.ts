@@ -27,7 +27,7 @@ export function usageRoutes(auth: Auth) {
         userId,
         apiKeyId: body.apiKeyId || 'api-key'
       })
-      return { id: event._id, timestamp: event.timestamp }
+      return { id: event._id, createdAt: event.createdAt }
     }, {
       auth: true,
       body: eventBody
@@ -41,7 +41,7 @@ export function usageRoutes(auth: Auth) {
       const count = await UsageEvent.countDocuments({
         userId,
         eventType: { $in: ['enhance_requested', 'enhance_success'] },
-        timestamp: { $gte: today }
+        createdAt: { $gte: today }
       })
 
       return { count, date: today.toISOString().split('T')[0], limit: 10 }
@@ -59,8 +59,8 @@ export function usageRoutes(auth: Auth) {
 
         const [dailyBreakdown, platformBreakdown, toneBreakdown, totals] = await Promise.all([
           UsageEvent.aggregate([
-            { $match: { userId, timestamp: { $gte: since }, eventType: { $ne: 'enhance_error' } } },
-            { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$timestamp' } }, count: { $sum: 1 } } },
+            { $match: { userId, createdAt: { $gte: since }, eventType: { $ne: 'enhance_error' } } },
+            { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, count: { $sum: 1 } } },
             { $sort: { _id: 1 } }
           ]),
 
@@ -84,13 +84,13 @@ export function usageRoutes(auth: Auth) {
                 total: { $sum: 1 },
                 thisMonth: {
                   $sum: {
-                    $cond: [{ $gte: ['$timestamp', since] }, 1, 0]
+                    $cond: [{ $gte: ['$createdAt', since] }, 1, 0]
                   }
                 },
                 today: {
                   $sum: {
                     $cond: [{
-                      $gte: ['$timestamp', new Date(new Date().setHours(0, 0, 0, 0))]
+                      $gte: ['$createdAt', new Date(new Date().setHours(0, 0, 0, 0))]
                     }, 1, 0]
                   }
                 }

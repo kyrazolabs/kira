@@ -8,7 +8,7 @@ export interface IUsageEvent {
   eventType: 'enhance_requested' | 'enhance_success' | 'enhance_error'
   textLength: number
   errorMessage: string | null
-  timestamp: Date
+  createdAt: Date
 }
 
 const usageEventSchema = new mongoose.Schema<IUsageEvent>({
@@ -26,7 +26,7 @@ const usageEventSchema = new mongoose.Schema<IUsageEvent>({
 }, { timestamps: true })
 
 // Index for daily aggregation queries
-usageEventSchema.index({ userId: 1, timestamp: -1 })
-usageEventSchema.index({ userId: 1, eventType: 1, timestamp: -1 })
+usageEventSchema.index({ userId: 1, createdAt: -1 })
+usageEventSchema.index({ userId: 1, eventType: 1, createdAt: -1 })
 
 export const UsageEvent = mongoose.model<IUsageEvent>('UsageEvent', usageEventSchema)

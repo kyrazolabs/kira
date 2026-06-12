@@ -14,7 +14,8 @@ async function request(path, options = {}) {
 
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
-    headers
+    headers,
+    credentials: 'omit'
   })
 
   const data = await res.json().catch(() => ({}))
