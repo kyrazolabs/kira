@@ -5,11 +5,12 @@ export function sessionAuth(auth: Auth) {
   return new Elysia({ name: 'session-auth' })
     .macro({
       auth: {
-        async resolve({ error, request: { headers } }) {
+        async resolve({ request: { headers }, set }) {
           const session = await auth.api.getSession({ headers })
 
           if (!session?.user) {
-            return error(401, { error: 'Authentication required' })
+            set.status = 401
+            return { userId: null }
           }
 
           return {
@@ -25,11 +26,12 @@ export function apiKeyAuth(auth: Auth) {
   return new Elysia({ name: 'api-key-auth' })
     .macro({
       auth: {
-        async resolve({ error, request: { headers } }) {
+        async resolve({ request: { headers }, set }) {
           const authHeader = headers.get('authorization')
 
           if (!authHeader?.startsWith('Bearer ')) {
-            return error(401, { error: 'API key required. Use Authorization: Bearer <key>' })
+            set.status = 401
+            return { userId: null }
           }
 
           const key = authHeader.slice(7)
@@ -40,12 +42,14 @@ export function apiKeyAuth(auth: Auth) {
             })
 
             if (!result.valid || !result.key) {
-              return error(401, { error: result.error?.message || 'Invalid API key' })
+              set.status = 401
+              return { userId: null }
             }
 
             return { userId: result.key.userId }
           } catch {
-            return error(401, { error: 'Invalid API key' })
+            set.status = 401
+            return { userId: null }
           }
         }
       }

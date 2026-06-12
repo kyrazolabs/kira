@@ -33,7 +33,8 @@ export function configRoutes(auth: Auth) {
   return new Elysia({ prefix: '/api/config' })
     .use(sessionAuth(auth))
 
-    .get('/', async ({ userId }) => {
+    .get('/', async ({ userId, set }) => {
+      if (!userId) { set.status = 401; return { error: 'Authentication required' } }
       const [personas, config] = await Promise.all([
         Persona.find({ userId }).sort({ updatedAt: -1 }).lean(),
         UserConfig.findOne({ userId }).lean()

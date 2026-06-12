@@ -56,7 +56,11 @@ export function enhanceRoutes(auth: Auth) {
   return new Elysia({ prefix: '/api/enhance' })
     .use(apiKeyAuth(auth))
 
-    .post('/', async ({ userId, body }) => {
+    .post('/', async ({ userId, body, set }) => {
+      if (!userId) {
+        set.status = 401
+        return { error: 'Authentication required' }
+      }
       try {
         // Load user's default persona and config
         const [config, defaultPersona] = await Promise.all([
@@ -86,6 +90,8 @@ export function enhanceRoutes(auth: Auth) {
         return { enhancedText }
 
       } catch (error) {
+        console.error('Enhance error:', error instanceof Error ? error.message : error)
+        console.error('Full error:', error)
         // Record error
         await UsageEvent.create({
           userId,
