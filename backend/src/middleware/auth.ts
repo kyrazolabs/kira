@@ -40,6 +40,7 @@ export function apiKeyAuth(auth: Auth) {
             const result = await auth.api.verifyApiKey({
               body: { key }
             })
+            console.log('API key verify result:', JSON.stringify({ valid: result.valid, keyId: result.key?.id, error: result.error }))
 
             if (!result.valid || !result.key) {
               set.status = 401
@@ -47,7 +48,8 @@ export function apiKeyAuth(auth: Auth) {
             }
 
             return { userId: result.key.userId }
-          } catch {
+          } catch (err) {
+            console.error('API key verify error:', err)
             set.status = 401
             return { userId: null }
           }
