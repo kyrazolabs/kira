@@ -67,7 +67,7 @@ export function showDiffPanel({ original, enhanced, onAccept, onRetry, onKeep, o
 
   const closeBtn = document.createElement('button')
   closeBtn.className = 'ce-button-tertiary'
-  closeBtn.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 3l18 18M3 21L21 3"/></svg>`
+  closeBtn.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M1 1l22 22M1 23L23 1"/></svg>`
   closeBtn.style.cssText = `
     width: 44px;
     height: 44px;
