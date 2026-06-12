@@ -1,6 +1,6 @@
 import { Elysia, t } from 'elysia'
 import type { Auth } from '../auth'
-import { sessionAuth, apiKeyAuth } from '../middleware/auth'
+import { sessionAuth } from '../middleware/auth'
 import { UsageEvent } from '../models/usage'
 
 const eventBody = t.Object({
@@ -19,8 +19,8 @@ const eventBody = t.Object({
 export function usageRoutes(auth: Auth) {
   return new Elysia({ prefix: '/api/usage' })
 
-    // POST /api/usage/event — API key required
-    .use(apiKeyAuth(auth))
+    // POST /api/usage/event — session or API key
+    .use(sessionAuth(auth))
     .post('/event', async ({ userId, body }) => {
       const event = await UsageEvent.create({
         ...body,
@@ -33,7 +33,7 @@ export function usageRoutes(auth: Auth) {
       body: eventBody
     })
 
-    // GET /api/usage/today — API key required
+    // GET /api/usage/today — session or API key
     .get('/today', async ({ userId }) => {
       const today = new Date()
       today.setHours(0, 0, 0, 0)

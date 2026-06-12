@@ -22,7 +22,11 @@ export function createAuth(db: Db) {
 
   return betterAuth({
     database: mongodbAdapter(db, { client }),
-    trustedOrigins: ['http://localhost:5173', 'http://localhost:3000'],
+    trustedOrigins: [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'chrome-extension://igmencoidcodhdiccnokpijdiepghlmb'
+    ],
 
     socialProviders: {
       google: {
@@ -32,7 +36,11 @@ export function createAuth(db: Db) {
     },
 
     plugins: [
-      apiKey({ defaultPrefix: 'ce_' }),
+      apiKey({
+        defaultPrefix: 'ce_',
+        apiKeyHeaders: ['authorization'],
+        enableSessionForAPIKeys: true
+      }),
       ...(process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes('replace_me')
         ? [stripe({
             stripeClient: getStripeClient(),

@@ -1,6 +1,6 @@
 import { Elysia, t } from 'elysia'
 import type { Auth } from '../auth'
-import { apiKeyAuth, sessionAuth } from '../middleware/auth'
+import { sessionAuth } from '../middleware/auth'
 import { callGemini, GeminiError } from '../lib/gemini'
 import { Persona } from '../models/persona'
 import { UserConfig } from '../models/config'
@@ -54,7 +54,7 @@ function buildPrompt(platform: string, tone: string, personaPrompt: string | nul
 
 export function enhanceRoutes(auth: Auth) {
   return new Elysia({ prefix: '/api/enhance' })
-    .use(apiKeyAuth(auth))
+    .use(sessionAuth(auth))
 
     .post('/', async ({ userId, body, set }) => {
       if (!userId) {
