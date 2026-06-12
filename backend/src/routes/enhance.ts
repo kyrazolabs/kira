@@ -2,6 +2,7 @@ import { Elysia, t } from 'elysia'
 import type { Auth } from '../auth'
 import { sessionAuth } from '../middleware/auth'
 import { callGemini, GeminiError } from '../lib/gemini'
+import { buildEnhancePrompt } from '../lib/prompts'
 import { Persona } from '../models/persona'
 import { UserConfig } from '../models/config'
 import { UsageEvent } from '../models/usage'
@@ -11,15 +12,6 @@ const enhanceBody = t.Object({
   platform: t.String(),
   tone: t.Optional(t.String())
 })
-
-function buildPrompt(platform: string, tone: string, personaPrompt: string | null, text: string): string {
-  const rules: Record<string, string> = {
-    twitter: 'Keep under 280 characters. Use line breaks for readability. One strong hook, one punchline. No hashtag spam (max 1).',
-    linkedin: 'Tell a story in 3 short paragraphs. Start with a bold claim or personal anecdote. End with a thought-provoking question.',
-    reddit: 'Be direct and genuinely valuable. No marketing speak. No self-promotion. Write like a smart friend giving advice.',
-    threads: 'Conversational tone, like texting a close friend. Short lines. One thought per post.',
-    generic: 'Make it clear, concise, and engaging. Remove filler words.'
-  }
 
   const tones: Record<string, string> = {
     casual: 'Rewrite this in a casual, conversational tone. Keep it short and punchy.',

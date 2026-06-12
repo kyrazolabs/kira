@@ -25,7 +25,7 @@ export function createAuth(db: Db) {
     trustedOrigins: [
       'http://localhost:5173',
       'http://localhost:3000',
-      'chrome-extension://igmencoidcodhdiccnokpijdiepghlmb'
+      ...(process.env.EXTENSION_ID ? [`chrome-extension://${process.env.EXTENSION_ID}`] : [])
     ],
 
     rateLimit: {

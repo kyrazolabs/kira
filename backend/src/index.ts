@@ -10,8 +10,9 @@ export function createApp(auth: Auth) {
     .decorate('auth', auth)
 
     .use(cors({
-      origin: ['http://localhost:5173', 'http://localhost:3000', 'chrome-extension://igmencoidcodhdiccnokpijdiepghlmb'],
-
+      origin: ['http://localhost:5173', 'http://localhost:3000',
+        ...(process.env.EXTENSION_ID ? [`chrome-extension://${process.env.EXTENSION_ID}`] : [])
+      ],
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization']

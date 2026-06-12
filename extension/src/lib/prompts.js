@@ -1,5 +1,5 @@
 // Platform-aware prompt builder — the core IP
-// Each platform gets different rewriting rules. Each tone applies different voice.
+// SYNCED: Keep in sync with backend/src/lib/prompts.ts
 
 const TONES = {
   casual: {
