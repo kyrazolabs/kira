@@ -135,7 +135,7 @@ export function showDiffPanel({ original, enhanced, onAccept, onRetry, onKeep, o
 
   const keepBtn = document.createElement('button')
   keepBtn.className = 'ce-button-tertiary'
-  keepBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M3 10h10a5 5 0 015 5v2M3 10l4-4M3 10l4 4"/></svg> Dismiss`
+  keepBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M18 6L6 18M6 6l12 12"/></svg> Keep Original`
   keepBtn.addEventListener('click', (e) => {
     e.stopPropagation()
     onKeep()
