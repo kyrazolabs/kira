@@ -6,6 +6,7 @@ import { colors, typography, rounded, spacing, FONT_FEATURE_SETTINGS } from '../
 let styleEl = null
 
 export function injectBaseStyles() {
+  if (!document.head || !document.body) return
   if (styleEl && styleEl.parentNode) return
 
   styleEl = document.createElement('style')

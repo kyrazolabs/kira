@@ -85,7 +85,7 @@ export function injectButton(input, onEnhance) {
     }
   })
 
-  document.body.appendChild(buttonEl)
+  if (document.body) document.body.appendChild(buttonEl)
   positionButton(input)
 
   document.addEventListener('scroll', updatePosition, true)
@@ -168,9 +168,9 @@ function getCaretScreenPosition(input) {
   if (input.tagName === 'INPUT' && input.type !== 'textarea') {
     mirror.style.width = 'auto'
     mirror.textContent = textBefore
-    document.body.appendChild(mirror)
+    if (document.body) document.body.appendChild(mirror)
     const textWidth = mirror.getBoundingClientRect().width
-    document.body.removeChild(mirror)
+    if (mirror.parentNode) mirror.parentNode.removeChild(mirror)
 
     const padX = parseFloat(style.paddingLeft) || 0
     const scrollLeft = input.scrollLeft || 0
@@ -190,7 +190,7 @@ function getCaretScreenPosition(input) {
   const lines = textBefore.split('\n')
   const lastLine = lines[lines.length - 1] || ''
 
-  document.body.appendChild(mirror)
+  if (document.body) document.body.appendChild(mirror)
 
   let html = ''
   for (let i = 0; i < lines.length - 1; i++) {
@@ -210,7 +210,7 @@ function getCaretScreenPosition(input) {
     top = markerRect.top + markerRect.height / 2
   }
 
-  document.body.removeChild(mirror)
+  if (mirror.parentNode) mirror.parentNode.removeChild(mirror)
   return { left, top }
 }
 

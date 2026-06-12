@@ -90,6 +90,9 @@ async function handleMessage(message) {
 
 async function handleEnhanceText({ text, platform, tone }) {
   try {
+    if (!text || typeof text !== 'string') {
+      return { success: false, error: 'Invalid text provided.' }
+    }
     const settings = await getSettings()
     const apiKey = settings.apiKey
 
