@@ -22,10 +22,10 @@ export function showToast(message, type = 'success') {
   toast.className = 'ce-container'
 
   const icon = {
-    success: '✓',
-    error: '✗',
-    info: 'ℹ'
-  }[type] || '✓'
+    success: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>',
+    error:   '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+    info:    '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>'
+  }[type] || '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>'
 
   const accentColor = {
     success: colors.accentGreen,
@@ -75,7 +75,7 @@ export function showToast(message, type = 'success') {
     line-height: 1;
     flex-shrink: 0;
   `
-  iconEl.textContent = icon
+  iconEl.innerHTML = icon
 
   // Message
   const msgEl = document.createElement('span')

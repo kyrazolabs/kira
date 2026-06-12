@@ -67,7 +67,7 @@ export function showDiffPanel({ original, enhanced, onAccept, onRetry, onKeep, o
 
   const closeBtn = document.createElement('button')
   closeBtn.className = 'ce-button-tertiary'
-  closeBtn.textContent = '×'
+  closeBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>`
   closeBtn.style.cssText = `
     width: 32px;
     height: 32px;
@@ -99,10 +99,7 @@ export function showDiffPanel({ original, enhanced, onAccept, onRetry, onKeep, o
   // Add sparkle icon to enhanced header
   const enhancedHeader = enhancedCol.querySelector('[data-col-header]')
   if (enhancedHeader) {
-    const sparkle = document.createElement('span')
-    sparkle.textContent = ' ✨'
-    sparkle.style.fontSize = '14px'
-    enhancedHeader.appendChild(sparkle)
+    enhancedHeader.innerHTML += ' <svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><path d="M0 0h24v24H0z" fill="none"/><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5" d="M3 12c6.268 0 9-2.637 9-9c0 6.363 2.713 9 9 9c-6.287 0-9 2.713-9 9c0-6.287-2.732-9-9-9Z"/></svg>'
   }
 
   columns.appendChild(originalCol)
@@ -122,7 +119,7 @@ export function showDiffPanel({ original, enhanced, onAccept, onRetry, onKeep, o
 
   const acceptBtn = document.createElement('button')
   acceptBtn.className = 'ce-button-primary'
-  acceptBtn.textContent = '✓ Accept Enhanced'
+  acceptBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M5 13l4 4L19 7"/></svg> Accept Enhanced`
   acceptBtn.addEventListener('click', (e) => {
     e.stopPropagation()
     onAccept()
@@ -130,7 +127,7 @@ export function showDiffPanel({ original, enhanced, onAccept, onRetry, onKeep, o
 
   const retryBtn = document.createElement('button')
   retryBtn.className = 'ce-button-tertiary'
-  retryBtn.textContent = '🔄 Try Again'
+  retryBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg> Try Again`
   retryBtn.addEventListener('click', (e) => {
     e.stopPropagation()
     onRetry()
@@ -138,7 +135,7 @@ export function showDiffPanel({ original, enhanced, onAccept, onRetry, onKeep, o
 
   const keepBtn = document.createElement('button')
   keepBtn.className = 'ce-button-tertiary'
-  keepBtn.textContent = '✗ Keep Original'
+  keepBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M18 6L6 18M6 6l12 12"/></svg> Keep Original`
   keepBtn.addEventListener('click', (e) => {
     e.stopPropagation()
     onKeep()
@@ -146,7 +143,7 @@ export function showDiffPanel({ original, enhanced, onAccept, onRetry, onKeep, o
 
   const copyBtn = document.createElement('button')
   copyBtn.className = 'ce-button-tertiary'
-  copyBtn.textContent = '📋 Copy'
+  copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy`
   copyBtn.addEventListener('click', (e) => {
     e.stopPropagation()
     onCopy()

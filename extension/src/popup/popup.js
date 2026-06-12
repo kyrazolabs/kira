@@ -167,7 +167,7 @@ async function onPasteEnhance() {
     showStatus('Connection error. Try again.', 'error')
   } finally {
     btn.disabled = false
-    btn.textContent = '✨ Enhance Pasted Text'
+    btn.textContent = 'Enhance Pasted Text'
   }
 }
 

@@ -51,9 +51,9 @@ function ToastContainer() {
   if (toasts.length === 0) return null
 
   const colors = {
-    success: { bg: 'rgba(89,212,153,0.15)', border: 'rgba(89,212,153,0.25)', text: '#59d499', icon: '✓' },
-    error:   { bg: 'rgba(255,97,97,0.15)',  border: 'rgba(255,97,97,0.25)',  text: '#ff6161', icon: '✗' },
-    info:    { bg: 'rgba(87,193,255,0.15)',  border: 'rgba(87,193,255,0.25)',  text: '#57c1ff', icon: 'ℹ' }
+    success: { bg: 'rgba(89,212,153,0.15)', border: 'rgba(89,212,153,0.25)', text: '#59d499', icon: 'M5 13l4 4L19 7' },
+    error:   { bg: 'rgba(255,97,97,0.15)',  border: 'rgba(255,97,97,0.25)',  text: '#ff6161', icon: 'M18 6L6 18M6 6l12 12' },
+    info:    { bg: 'rgba(87,193,255,0.15)',  border: 'rgba(87,193,255,0.25)',  text: '#57c1ff', icon: 'M12 16v-4M12 8h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z' }
   }
 
   return (
@@ -77,7 +77,9 @@ function ToastContainer() {
               className="inline-flex items-center justify-center w-5 h-5 rounded-xs text-xs font-semibold flex-shrink-0"
               style={{ background: c.bg, color: c.text }}
             >
-              {c.icon}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d={c.icon}/>
+              </svg>
             </span>
             <span>{t.message}</span>
           </div>

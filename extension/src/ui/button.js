@@ -1,12 +1,13 @@
-// Floating sparkle enhance button — injected near active text inputs
+// Sparkle enhance button — injected near active text inputs
 
 import { colors, rounded } from '../utils/design-tokens.js'
-import { getCursorPosition } from '../utils/dom.js'
 
 let buttonEl = null
 
 const BTN_SIZE = 36
 const BTN_GAP = 10
+
+const SPARKLE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style="flex-shrink:0;pointer-events:none;margin:0 auto;color:${colors.accentYellow};"><path d="M0 0h24v24H0z" fill="none"/><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5" d="M3 12c6.268 0 9-2.637 9-9c0 6.363 2.713 9 9 9c-6.287 0-9 2.713-9 9c0-6.287-2.732-9-9-9Z"/></svg>`
 
 export function injectButton(input, onEnhance) {
   if (!input) return
@@ -44,25 +45,17 @@ export function injectButton(input, onEnhance) {
     transition: width 180ms ease, border-radius 180ms ease, background-color 150ms ease, opacity 200ms ease, padding 180ms ease;
   `
 
-  buttonEl.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style="flex-shrink:0;pointer-events:none;margin:0 auto;color:${colors.accentYellow};">
-      <path d="M0 0h24v24H0z" fill="none"/>
-      <path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5" d="M3 12c6.268 0 9-2.637 9-9c0 6.363 2.713 9 9 9c-6.287 0-9 2.713-9 9c0-6.287-2.732-9-9-9Z"/>
-    </svg>
-    <span class="ce-btn-label" style="display:inline-block;overflow:hidden;white-space:nowrap;max-width:0;opacity:0;transition:max-width 180ms ease,opacity 150ms ease,margin 180ms ease;">Enhance</span>
-  `
+  buttonEl.innerHTML = `${SPARKLE_SVG}<span class="ce-btn-label" style="display:inline-block;overflow:hidden;white-space:nowrap;max-width:0;opacity:0;transition:max-width 180ms ease,opacity 150ms ease,margin 180ms ease;">Enhance</span>`
 
   const iconSvg = buttonEl.querySelector('svg')
   const textSpan = buttonEl.querySelector('.ce-btn-label')
 
-  // Click
   buttonEl.addEventListener('click', (e) => {
     e.preventDefault()
     e.stopPropagation()
     onEnhance()
   })
 
-  // Hover expand
   buttonEl.addEventListener('mouseenter', () => {
     buttonEl.style.backgroundColor = colors.surfaceCard
     buttonEl.style.width = 'auto'
@@ -85,7 +78,6 @@ export function injectButton(input, onEnhance) {
     textSpan.style.marginLeft = '0'
   })
 
-  // Keyboard
   buttonEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
@@ -149,7 +141,6 @@ function getCaretScreenPosition(input) {
   const inputRect = input.getBoundingClientRect()
   const style = window.getComputedStyle(input)
 
-  // For contenteditable, use Selection API directly
   if (input.isContentEditable) {
     const sel = window.getSelection()
     if (sel && sel.rangeCount > 0) {
@@ -160,16 +151,13 @@ function getCaretScreenPosition(input) {
         return { left: rect.right, top: rect.top + rect.height / 2 }
       }
     }
-    // Fallback for empty contenteditable
     return { left: inputRect.left + 8, top: inputRect.top + inputRect.height / 2 }
   }
 
-  // For textarea and input — use mirror span
   const text = input.value
   const caretPos = input.selectionEnd ?? text.length
   const textBefore = text.substring(0, caretPos)
 
-  // Create mirror span to measure text width
   const mirror = document.createElement('span')
   mirror.style.cssText = `
     position:fixed;visibility:hidden;white-space:pre-wrap;word-wrap:break-word;
@@ -177,7 +165,6 @@ function getCaretScreenPosition(input) {
     letter-spacing:${style.letterSpacing};line-height:${style.lineHeight};
   `
 
-  // For single-line input, simple measurement
   if (input.tagName === 'INPUT' && input.type !== 'textarea') {
     mirror.style.width = 'auto'
     mirror.textContent = textBefore
@@ -186,7 +173,6 @@ function getCaretScreenPosition(input) {
     document.body.removeChild(mirror)
 
     const padX = parseFloat(style.paddingLeft) || 0
-    // Account for scroll offset in inputs
     const scrollLeft = input.scrollLeft || 0
     return {
       left: inputRect.left + padX + textWidth - scrollLeft,
@@ -194,7 +180,6 @@ function getCaretScreenPosition(input) {
     }
   }
 
-  // For textarea — handle multi-line
   mirror.style.width = inputRect.width - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) + 'px'
   mirror.style.paddingLeft = style.paddingLeft
   mirror.style.paddingTop = style.paddingTop
@@ -202,13 +187,11 @@ function getCaretScreenPosition(input) {
   mirror.style.paddingBottom = style.paddingBottom
   mirror.style.boxSizing = 'border-box'
 
-  // Replace last newline-before-caret with a marker span to find cursor position
   const lines = textBefore.split('\n')
   const lastLine = lines[lines.length - 1] || ''
 
   document.body.appendChild(mirror)
 
-  // Build HTML: all full lines + last line with a marker
   let html = ''
   for (let i = 0; i < lines.length - 1; i++) {
     html += escapeHTML(lines[i]) + '<br>'

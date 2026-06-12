@@ -96,19 +96,19 @@ export default function Billing() {
 
         <div className="space-y-sm mb-xl">
           <div className="flex items-center gap-sm text-body-sm">
-            <span className="text-accent-green">✓</span>
+            <span className="text-accent-green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span>
             <span>Unlimited enhancements</span>
           </div>
           <div className="flex items-center gap-sm text-body-sm">
-            <span className={activeSub ? 'text-accent-green' : 'text-ash'}>✓</span>
+            <span className={activeSub ? 'text-accent-green' : 'text-ash'}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span>
             <span className={activeSub ? '' : 'text-ash'}>All 3 tones (Casual, Professional, Engaging)</span>
           </div>
           <div className="flex items-center gap-sm text-body-sm">
-            <span className={activeSub ? 'text-accent-green' : 'text-ash'}>✓</span>
+            <span className={activeSub ? 'text-accent-green' : 'text-ash'}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span>
             <span className={activeSub ? '' : 'text-ash'}>All platforms + generic</span>
           </div>
           <div className="flex items-center gap-sm text-body-sm">
-            <span className={activeSub ? 'text-accent-green' : 'text-ash'}>✓</span>
+            <span className={activeSub ? 'text-accent-green' : 'text-ash'}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span>
             <span className={activeSub ? '' : 'text-ash'}>Custom AI personas</span>
           </div>
         </div>
@@ -135,10 +135,10 @@ export default function Billing() {
             <p className="text-body-sm text-mute">forever</p>
           </div>
           <ul className="space-y-sm text-body-sm">
-            <li className="flex items-center gap-sm"><span className="text-accent-green">✓</span> 10 enhancements/day</li>
-            <li className="flex items-center gap-sm"><span className="text-accent-green">✓</span> X, LinkedIn, Reddit, Threads</li>
-            <li className="flex items-center gap-sm"><span className="text-accent-green">✓</span> Casual tone</li>
-            <li className="flex items-center gap-sm"><span className="text-ash">✓</span> <span className="text-ash">Professional & Engaging tones</span></li>
+            <li className="flex items-center gap-sm"><span className="text-accent-green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span> 10 enhancements/day</li>
+            <li className="flex items-center gap-sm"><span className="text-accent-green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span> X, LinkedIn, Reddit, Threads</li>
+            <li className="flex items-center gap-sm"><span className="text-accent-green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span> Casual tone</li>
+            <li className="flex items-center gap-sm"><span className="text-ash"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span> <span className="text-ash">Professional & Engaging tones</span></li>
           </ul>
         </div>
 
@@ -152,11 +152,11 @@ export default function Billing() {
             <p className="text-body-sm text-mute">per month</p>
           </div>
           <ul className="space-y-sm text-body-sm">
-            <li className="flex items-center gap-sm"><span className="text-accent-green">✓</span> Unlimited enhancements</li>
-            <li className="flex items-center gap-sm"><span className="text-accent-green">✓</span> All 4 platforms + generic</li>
-            <li className="flex items-center gap-sm"><span className="text-accent-green">✓</span> All 3 tones</li>
-            <li className="flex items-center gap-sm"><span className="text-accent-green">✓</span> Custom AI personas</li>
-            <li className="flex items-center gap-sm"><span className="text-accent-green">✓</span> 7-day free trial</li>
+            <li className="flex items-center gap-sm"><span className="text-accent-green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span> Unlimited enhancements</li>
+            <li className="flex items-center gap-sm"><span className="text-accent-green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span> All 4 platforms + generic</li>
+            <li className="flex items-center gap-sm"><span className="text-accent-green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span> All 3 tones</li>
+            <li className="flex items-center gap-sm"><span className="text-accent-green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span> Custom AI personas</li>
+            <li className="flex items-center gap-sm"><span className="text-accent-green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="flex-shrink-0"><path d="M5 13l4 4L19 7"/></svg></span> 7-day free trial</li>
           </ul>
         </div>
       </div>
