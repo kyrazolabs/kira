@@ -122,9 +122,11 @@ async function handleEnhanceText({ text, platform, tone }) {
 
 async function getUsageInfo() {
   try {
+    const apiKey = await getSettings().then(s => s.apiKey)
+    if (!apiKey) return { count: 0, limit: 10, tier: 'free', error: 'Not connected' }
     const data = await getTodayUsage()
     return { count: data.count || 0, limit: data.limit || 10, tier: 'free' }
-  } catch {
-    return { count: 0, limit: 10, tier: 'free', error: 'Backend unreachable' }
+  } catch (e) {
+    return { count: 0, limit: 10, tier: 'free', error: 'API unreachable' }
   }
 }

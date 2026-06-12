@@ -56,6 +56,9 @@ function onStorageChanged(changes, area) {
 async function refreshUsage() {
   try {
     const usage = await chrome.runtime.sendMessage({ type: 'GET_USAGE' })
+    if (usage.error) {
+      safeText('usage-label', usage.error)
+    }
     renderUsage(usage)
   } catch { /* popup might be closed */ }
 }
