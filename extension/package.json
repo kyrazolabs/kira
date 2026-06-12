@@ -1,6 +1,6 @@
 {
   "name": "kira-extension",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "description": "AI-powered content enhancement for social platforms. One click, platform-aware, inline.",
   "private": true,
   "type": "module",
