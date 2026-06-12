@@ -35,8 +35,8 @@ export function usageRoutes(auth: Auth) {
 
     // GET /api/usage/today — session or API key
     .get('/today', async ({ userId }) => {
-      const today = new Date()
-      today.setHours(0, 0, 0, 0)
+      const now = new Date()
+      const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
 
       const count = await UsageEvent.countDocuments({
         userId,
@@ -53,9 +53,11 @@ export function usageRoutes(auth: Auth) {
       .get('/stats', async ({ userId, query }) => {
         const days = parseInt(query?.days as string) || 30
 
-        const since = new Date()
-        since.setDate(since.getDate() - days)
-        since.setHours(0, 0, 0, 0)
+        const now = new Date()
+        const since = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+        since.setUTCDate(since.getUTCDate() - days)
+
+        const todayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
 
         const [dailyBreakdown, platformBreakdown, toneBreakdown, totals] = await Promise.all([
           UsageEvent.aggregate([
@@ -90,7 +92,7 @@ export function usageRoutes(auth: Auth) {
                 today: {
                   $sum: {
                     $cond: [{
-                      $gte: ['$createdAt', new Date(new Date().setHours(0, 0, 0, 0))]
+                      $gte: ['$createdAt', todayStart]
                     }, 1, 0]
                   }
                 }
