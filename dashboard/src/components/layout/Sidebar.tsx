@@ -41,7 +41,7 @@ export function Sidebar() {
         })}
       </nav>
       <div className="p-md border-t border-hairline">
-        <span className="text-caption-sm text-mute">Kira v1.0</span>
+        <span className="text-caption-sm text-mute">Kira v1.5</span>
       </div>
     </aside>
   )
