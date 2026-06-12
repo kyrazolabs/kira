@@ -1,6 +1,6 @@
 // Background service worker — relays enhance requests to backend API, handles config sync
 import { enhanceThroughAPI, syncConfig, getTodayUsage } from './utils/api-client.js'
-import { getSettings, updateSettings } from './utils/storage.js'
+import { getSettings, updateSettings, getDailyCount } from './utils/storage.js'
 
 // Sync config from backend when extension starts
 chrome.runtime.onInstalled.addListener(async () => {
@@ -58,7 +58,9 @@ async function handleMessage(message) {
       return handleEnhanceText(message.payload)
 
     case 'GET_SETTINGS':
-      return getSettings()
+      const s = await getSettings()
+      const normalizedCount = await getDailyCount()
+      return { ...s, enhancementCount: normalizedCount }
 
     case 'UPDATE_SETTINGS':
       return updateSettings(message.payload)
@@ -135,8 +137,11 @@ async function handleEnhanceText({ text, platform, tone }) {
 async function getUsageInfo() {
   try {
     const data = await getTodayUsage()
-    return { count: data.count || 0, limit: data.limit || 10, tier: 'free' }
+    const count = data.count || 0
+    await updateSettings({ enhancementCount: count })
+    return { count, limit: data.limit || 10, tier: 'free' }
   } catch {
-    return { count: 0, limit: 10, tier: 'free' }
+    const count = await getDailyCount()
+    return { count, limit: 10, tier: 'free' }
   }
 }

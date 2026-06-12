@@ -46,7 +46,7 @@ export function createAuth(db: Db) {
         rateLimit: {
           enabled: true,
           timeWindow: 60000,
-          maxRequests: 40
+          maxRequests: 60
         }
       }),
       ...(process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes('replace_me')
