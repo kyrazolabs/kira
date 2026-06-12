@@ -32,7 +32,7 @@ export function createAuth(db: Db) {
     },
 
     plugins: [
-      apiKey({ apiKeyPrefix: 'ce_' }),
+      apiKey({ defaultPrefix: 'ce_' }),
       ...(process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes('replace_me')
         ? [stripe({
             stripeClient: getStripeClient(),
