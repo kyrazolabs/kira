@@ -38,9 +38,7 @@ export default function Dashboard() {
   const createApiKey = async () => {
     try {
       const res = await authClient.apiKey.create({ name: 'Extension Key' }) as any
-      // Try different response structures
-      const key = res?.data?.key || res?.key || res?.data?.apiKey
-      console.log('API Key create response:', res)
+      const key = res?.data?.key || res?.key
       if (key) {
         setNewKey(key)
         toast('API key created — copy it now', 'success')

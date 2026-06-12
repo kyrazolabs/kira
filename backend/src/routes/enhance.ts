@@ -89,10 +89,7 @@ export function enhanceRoutes(auth: Auth) {
 
         return { enhancedText }
 
-      } catch (error) {
-        console.error('Enhance error:', error instanceof Error ? error.message : error)
-        console.error('Full error:', error)
-        // Record error
+    } catch (error) {
         await UsageEvent.create({
           userId,
           apiKeyId: 'api-key',
