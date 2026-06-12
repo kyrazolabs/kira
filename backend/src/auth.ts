@@ -38,7 +38,8 @@ export function createAuth(db: Db) {
     plugins: [
       apiKey({
         defaultPrefix: 'ce_',
-        enableSessionForAPIKeys: true
+        enableSessionForAPIKeys: true,
+        rateLimit: { enabled: false }
       }),
       ...(process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes('replace_me')
         ? [stripe({

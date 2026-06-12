@@ -112,6 +112,7 @@ async function handleEnhanceText({ text, platform, tone }) {
 
     // Sync count from backend after successful enhancement
     const usage = await getTodayUsage()
+    await updateSettings({ enhancementCount: usage.count || 0 })
 
     return {
       success: true,
