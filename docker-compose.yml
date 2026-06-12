@@ -1,0 +1,53 @@
+services:
+  kira-api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: kira-api
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://kira-mongo:27017/kira
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - STRIPE_PRO_PRICE_ID=${STRIPE_PRO_PRICE_ID}
+      - EXTENSION_ID=${EXTENSION_ID}
+    depends_on:
+      kira-mongo:
+        condition: service_healthy
+    restart: unless-stopped
+
+  kira-dashboard:
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+      args:
+        VITE_API_URL: /api
+    container_name: kira-dashboard
+    ports:
+      - "80:80"
+    depends_on:
+      - kira-api
+    restart: unless-stopped
+
+  kira-mongo:
+    image: mongo:8
+    container_name: kira-mongo
+    volumes:
+      - kira-mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  kira-mongo-data:
