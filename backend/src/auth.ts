@@ -28,6 +28,10 @@ export function createAuth(db: Db) {
       'chrome-extension://igmencoidcodhdiccnokpijdiepghlmb'
     ],
 
+    rateLimit: {
+      enabled: false
+    },
+
     socialProviders: {
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID || '',
