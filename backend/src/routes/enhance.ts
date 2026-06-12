@@ -56,6 +56,20 @@ export function enhanceRoutes(auth: Auth) {
   return new Elysia({ prefix: '/api/enhance' })
     .use(sessionAuth(auth))
 
+    // Health check — verifies Gemini connectivity
+    .get('/health', async () => {
+      try {
+        const key = process.env.GEMINI_API_KEY
+        if (!key || key === 'your-gemini-api-key') {
+          return { status: 'error', message: 'GEMINI_API_KEY not configured' }
+        }
+        await callGemini('respond with just the word ok', 0)
+        return { status: 'ok' }
+      } catch (e: any) {
+        return { status: 'error', message: e.message || 'Gemini unreachable' }
+      }
+    })
+
     .post('/', async ({ userId, body, set }) => {
       if (!userId) {
         set.status = 401
@@ -103,15 +117,17 @@ export function enhanceRoutes(auth: Auth) {
         if (error instanceof GeminiError) {
           const messages: Record<number, string> = {
             429: 'Rate limited. Please wait a moment.',
-            403: 'AI service unavailable.',
+            403: 'AI service unavailable. Check your GEMINI_API_KEY.',
             422: 'Content could not be generated. Try rewording.'
           }
           return new Response(JSON.stringify({
-            error: messages[error.status] || error.message
+            error: messages[error.status] || error.message, code: 'GEMINI_ERROR'
           }), { status: error.status || 500 })
         }
 
-        throw error
+        return new Response(JSON.stringify({
+          error: 'Enhancement failed. Please try again.', code: 'SERVER_ERROR'
+        }), { status: 500 })
       }
     }, {
       auth: true,

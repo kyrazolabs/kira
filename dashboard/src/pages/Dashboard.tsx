@@ -37,8 +37,9 @@ export default function Dashboard() {
 
   const createApiKey = async () => {
     try {
-      const res = await authClient.apiKey.create({ name: 'Extension Key' }) as any
-      const key = res?.data?.key || res?.key
+      const res = await authClient.apiKey.create({ name: 'Extension Key' }) as { data?: { key?: string }; error?: { message: string } }
+      if (res.error) { toast(res.error.message || 'Failed to create key', 'error'); return }
+      const key = res?.data?.key
       if (key) {
         setNewKey(key)
         toast('API key created — copy it now', 'success')

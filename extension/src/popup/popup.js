@@ -31,19 +31,16 @@ async function init() {
   $('tone-select').addEventListener('change', onToneChange)
   $('paste-input').addEventListener('input', onPasteInput)
   $('paste-enhance-btn').addEventListener('click', onPasteEnhance)
-  $('options-btn').addEventListener('click', () => chrome.runtime.openOptionsPage())
+  $('options-btn').addEventListener('click', () => {
+    try { chrome.runtime.openOptionsPage() }
+    catch { chrome.tabs.create({ url: chrome.runtime.getURL('options.html') }) }
+  })
   $('connect-btn').addEventListener('click', () => {
     chrome.tabs.create({ url: 'http://localhost:5173/login' })
   })
 
-  // Read usage from local storage only (no API calls for poll)
-  // Background updates enhancementCount after each successful enhance
-  refreshTimer = setInterval(async () => {
-    try {
-      const settings = await chrome.runtime.sendMessage({ type: 'GET_SETTINGS' })
-      renderUsage({ count: settings.enhancementCount || 0, limit: 10, tier: settings.tier || 'free' })
-    } catch {}
-  }, 5000)
+  // Poll usage every 5s while popup is open (reads from background)
+  refreshTimer = setInterval(refreshUsage, 5000)
 
   // Listen for storage changes (background updates count)
   chrome.storage.onChanged.addListener(onStorageChanged)

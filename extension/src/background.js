@@ -1,6 +1,6 @@
 // Background service worker — relays enhance requests to backend API, handles config sync
 import { enhanceThroughAPI, syncConfig, getTodayUsage } from './utils/api-client.js'
-import { getSettings, updateSettings, getDailyCount } from './utils/storage.js'
+import { getSettings, updateSettings } from './utils/storage.js'
 
 // Sync config from backend when extension starts
 chrome.runtime.onInstalled.addListener(async () => {
@@ -58,9 +58,7 @@ async function handleMessage(message) {
       return handleEnhanceText(message.payload)
 
     case 'GET_SETTINGS':
-      const s = await getSettings()
-      const normalizedCount = await getDailyCount()
-      return { ...s, enhancementCount: normalizedCount }
+      return getSettings()
 
     case 'UPDATE_SETTINGS':
       return updateSettings(message.payload)
@@ -99,49 +97,34 @@ async function handleEnhanceText({ text, platform, tone }) {
     const apiKey = settings.apiKey
 
     if (!apiKey) {
-      return {
-        success: false,
-        error: 'No API key configured. Get one from the Kira dashboard.'
-      }
+      return { success: false, error: 'No API key configured. Get one from the Kira dashboard.' }
     }
 
-    // Call backend API (handles rate limiting server-side)
     const result = await enhanceThroughAPI({
-      text,
-      platform,
+      text, platform,
       tone: tone || settings.tone || 'casual'
     })
 
-    // Sync count from backend after successful enhancement
-    const usage = await getTodayUsage()
-    await updateSettings({ enhancementCount: usage.count || 0 })
+    // Sync usage from backend after success
+    let usage = { count: 0, limit: 10, tier: 'free' }
+    try {
+      const data = await getTodayUsage()
+      usage = { count: data.count || 0, limit: data.limit || 10, tier: 'free' }
+    } catch { /* backend unreachable, use defaults */ }
 
-    return {
-      success: true,
-      enhancedText: result.enhancedText,
-      usage: {
-        count: usage.count || 0,
-        limit: usage.limit || 10,
-        tier: 'free'
-      }
-    }
+    return { success: true, enhancedText: result.enhancedText, usage }
   } catch (error) {
-    console.error('Enhance failed:', error.message)
-    return {
-      success: false,
-      error: error.message || 'Enhancement failed. Please try again.'
-    }
+    const msg = error.message || 'Enhancement failed. Please try again.'
+    console.error('Enhance failed:', msg)
+    return { success: false, error: msg }
   }
 }
 
 async function getUsageInfo() {
   try {
     const data = await getTodayUsage()
-    const count = data.count || 0
-    await updateSettings({ enhancementCount: count })
-    return { count, limit: data.limit || 10, tier: 'free' }
+    return { count: data.count || 0, limit: data.limit || 10, tier: 'free' }
   } catch {
-    const count = await getDailyCount()
-    return { count, limit: 10, tier: 'free' }
+    return { count: 0, limit: 10, tier: 'free', error: 'Backend unreachable' }
   }
 }

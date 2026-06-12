@@ -29,6 +29,7 @@ async function safeSendMessage(msg) {
 
 // Initialize when the page loads
 function init() {
+  if (!document.body) return
   try {
     STATE.platform = getActivePlatform()
     injectBaseStyles()
@@ -40,9 +41,7 @@ function init() {
       const active = findActiveInput()
       if (active) onFocusIn({ target: active })
     }, 1000)
-  } catch (e) {
-    // Extension context may be invalid — ignore
-  }
+  } catch { /* unsupported page, skip */ }
 }
 
 function onFocusIn(event) {
