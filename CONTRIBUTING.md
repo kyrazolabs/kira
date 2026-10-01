@@ -13,7 +13,7 @@ Open a GitHub issue before starting a large feature, so the scope is agreed befo
 
 ## Security
 
-If you find a vulnerability, do not open a public issue and do not paste secrets into a pull request. Use **Security → Report a vulnerability** on the GitHub repository so the report stays private.
+If you find a vulnerability, contact the maintainers privately. Do not open a public issue, and do not paste secrets, keys, or tokens into a pull request.
 
 ## Setup
 
