@@ -2,6 +2,10 @@ node_modules/
 dist/
 *.zip
 .env
+.env.local
+.env.production
+.env.development
+.env.*.local
 .DS_Store
 *.log
 /tmp/
